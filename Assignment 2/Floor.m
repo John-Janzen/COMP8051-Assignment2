@@ -12,7 +12,9 @@
 
 @implementation Floor
 
-- (id) init:(GLKVector3)pos :(GLKVector3)rot :(GLKVector3)scale :(GLfloat)renderType :(GLfloat)num :(GLfloat *)array :(GLfloat) count : (GLfloat*) txtArray : (GLuint) texture : (GLfloat) size{
+- (id) init:(GLKVector3)pos :(GLKVector3)rot :(GLKVector3)scale
+           :(GLfloat)renderType :(GLfloat)num :(GLfloat *)array :(GLfloat) count
+           : (GLfloat*) txtArray : (GLuint) texture : (GLfloat) size : (GLfloat*) normArray : (GLfloat) size3{
     self = [super init];
     if (self) {
         _positionVector = pos;
@@ -23,8 +25,10 @@
         [super setRenderType:renderType];
         [super setArraySize: (count * sizeof(GLfloat))];
         [super setTxtArraySize:(size * sizeof(GLfloat))];
+        [super setNormArraySize:(size3 * sizeof(GLfloat))];
         _texture = texture;
         _textureArray = txtArray;
+        _normalArray = normArray;
     }
     return self;
 }

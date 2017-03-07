@@ -14,14 +14,14 @@
 @interface Renderable : NSObject {
     
     @public
-    GLfloat *_arrayVertices, *_textureArray;
-    GLuint _vertexArray, _vertexBuffer[2];
+    GLfloat *_arrayVertices, *_textureArray, *_normalArray;
+    GLuint _vertexArray, _vertexBuffer[3];
     GLKVector3 _positionVector, _rotateVector, _scaleVector;
     GLuint _texture;
     @private
     GLKMatrix4 _modelMatrix, _modelViewProjection;
     GLKMatrix3 _normalMatrix;
-    GLfloat _arraySize, _renderType, _numOfIndices, _txtArraySize;
+    GLfloat _arraySize, _renderType, _numOfIndices, _txtArraySize, _normArraySize;
     
 }
 
@@ -47,11 +47,14 @@
 - (GLfloat) getRenderType;
 - (GLfloat) getNumIndices;
 - (GLfloat) getTxtArraySize;
+- (GLfloat) getNormArraySize;
 
 - (void) setArraySize : (GLfloat) size;
 - (void) setRenderType : (GLfloat) render;
 - (void) setNumIndices : (GLfloat) ind;
 - (void) setTxtArraySize : (GLfloat) size;
+- (void) setNormArraySize : (GLfloat) size;
+
 
 @end
 

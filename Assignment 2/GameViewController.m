@@ -42,7 +42,7 @@ enum
     NSMutableArray *renders;
     MazeController *maze;
     TextureLoad *textureLoader;
-    GLfloat *floorVertices, *EWWallVertices, *NSWallVertices, *textureArray;
+    GLfloat *floorVertices, *EWWallVertices, *NSWallVertices, *textureArray, *normalVertices;
     float moving;
     int height, width;
     
@@ -83,12 +83,13 @@ enum
     renders = [NSMutableArray arrayWithCapacity:1];
     maze = [[MazeController alloc] init];
     textureLoader = [[TextureLoad alloc] init];
-    width = height = 4;
+    width = height = 2;
     [maze Create:width :height];
     float size = [self createFloor];
     float size2 = [self createTexture];
+    float size3 = [self createFloorNormals];
     [renders addObject:[[Floor alloc] init : GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(1.0f, 1.0f, 1.0f)
-                                           : GL_TRIANGLES: (size / 6) : floorVertices : size : textureArray : [textureLoader loadTexture:@"floorTxt.jpg"] : size2]];
+                                           : GL_TRIANGLES: (size / 3) : floorVertices : size : textureArray : [textureLoader loadTexture:@"floorTxt.jpg"] : size2 : normalVertices : size3]];
     //size = [self createEWWalls];
     //[renders addObject:[[Floor alloc] init : GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(1.0f, 1.0f, 1.0f) : GL_TRIANGLES: (size / 6) : EWWallVertices : size]];
     //size = [self createNSWalls];
@@ -151,24 +152,26 @@ enum
         glGenVertexArraysOES(1, &render->_vertexArray);
         glBindVertexArrayOES(render->_vertexArray);
         
-        glGenBuffers(2, render->_vertexBuffer);
+        glGenBuffers(3, render->_vertexBuffer);
+        
         glBindBuffer(GL_ARRAY_BUFFER, render->_vertexBuffer[0]);
         glBufferData(GL_ARRAY_BUFFER, [render getArraySize], render->_arrayVertices, GL_STATIC_DRAW);
-        
         glEnableVertexAttribArray(GLKVertexAttribPosition);
-        glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(0));
-        glEnableVertexAttribArray(GLKVertexAttribNormal);
-        glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(12));
+        glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), BUFFER_OFFSET(0));
         
         glBindBuffer(GL_ARRAY_BUFFER, render->_vertexBuffer[1]);
+        glBufferData(GL_ARRAY_BUFFER, [render getNormArraySize], render->_normalArray, GL_STATIC_DRAW);
+        glEnableVertexAttribArray(GLKVertexAttribNormal);
+        glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), BUFFER_OFFSET(0));
+        
+        glBindBuffer(GL_ARRAY_BUFFER, render->_vertexBuffer[2]);
         glBufferData(GL_ARRAY_BUFFER, [render getTxtArraySize], render->_textureArray, GL_STATIC_DRAW);
         glEnableVertexAttribArray(GLKVertexAttribTexCoord0);
-        glVertexAttribPointer(GLKVertexAttribTexCoord0, 2, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(0));
+        glVertexAttribPointer(GLKVertexAttribTexCoord0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), BUFFER_OFFSET(0));
         
         glBindVertexArrayOES(0);
         
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, render->_texture);
         glUniform1i(uniforms[UNIFORM_TEXTURE], 0);
         
     }
@@ -224,7 +227,7 @@ enum
     
     for (Renderable *render in renders) {
         glBindVertexArrayOES(render->_vertexArray);
-        //glBindTexture(GL_TEXTURE_2D, render->_texture);
+        glBindTexture(GL_TEXTURE_2D, render->_texture);
         
         // Render the object again with ES2
         glUseProgram(_program);
@@ -433,6 +436,15 @@ enum
         textureArray[i] = [text[i] floatValue];
     }
     return text.count;
+}
+
+- (float) createFloorNormals {
+    NSMutableArray *norm = [maze CreateFloorNormalVertices];
+    normalVertices = (GLfloat*)malloc([norm count] * sizeof(GLfloat));
+    for (int i = 0; i < [norm count]; i++) {
+        normalVertices[i] = [norm[i] floatValue];
+    }
+    return norm.count;
 }
 
 @end

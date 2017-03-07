@@ -88,6 +88,10 @@
     return _txtArraySize;
 }
 
+- (GLfloat) getNormArraySize {
+    return _normArraySize;
+}
+
 - (void) setArraySize : (GLfloat) size{
     _arraySize = size;
 }
@@ -102,6 +106,10 @@
 
 - (void) setTxtArraySize:(GLfloat)size {
     _txtArraySize = size;
+}
+
+- (void) setNormArraySize:(GLfloat)size {
+    _normArraySize = size;
 }
 
 
