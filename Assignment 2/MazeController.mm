@@ -55,17 +55,53 @@ GLKVector3 cubeVertex[8] =
     return verticesArray;
 }
 
-- (NSMutableArray*) CreateTextureVertices {
+- (NSMutableArray*) CreateFloorTextureVertices {
     texturesArray = [[NSMutableArray alloc] init];
     for (int i = 0; i < width; i++) {
         for (int j = 0; j < height; j++) {
-            [texturesArray addObject:@(0.0f)]; [texturesArray addObject:@(1.0f)];
-            [texturesArray addObject:@(1.0f)]; [texturesArray addObject:@(1.0f)];
-            [texturesArray addObject:@(0.0f)]; [texturesArray addObject:@(0.0f)];
-            
-            [texturesArray addObject:@(1.0f)]; [texturesArray addObject:@(1.0f)];
             [texturesArray addObject:@(1.0f)]; [texturesArray addObject:@(0.0f)];
             [texturesArray addObject:@(0.0f)]; [texturesArray addObject:@(0.0f)];
+            [texturesArray addObject:@(0.0f)]; [texturesArray addObject:@(1.0f)];
+                
+            [texturesArray addObject:@(1.0f)]; [texturesArray addObject:@(0.0f)];
+            [texturesArray addObject:@(1.0f)]; [texturesArray addObject:@(1.0f)];
+            [texturesArray addObject:@(0.0f)]; [texturesArray addObject:@(1.0f)];
+        }
+    }
+    return texturesArray;
+}
+
+- (NSMutableArray*) CreateEWTextureVertices {
+    texturesArray = [[NSMutableArray alloc] init];
+    for (int i = 0; i < width; i++) {
+        for (int j = 0; j < height; j++) {
+            if (maze->GetCell(i, j).westWallPresent || maze->GetCell(i, j).eastWallPresent) {
+                [texturesArray addObject:@(1.0f)]; [texturesArray addObject:@(0.0f)];
+                [texturesArray addObject:@(0.0f)]; [texturesArray addObject:@(0.0f)];
+                [texturesArray addObject:@(0.0f)]; [texturesArray addObject:@(1.0f)];
+                
+                [texturesArray addObject:@(1.0f)]; [texturesArray addObject:@(0.0f)];
+                [texturesArray addObject:@(1.0f)]; [texturesArray addObject:@(1.0f)];
+                [texturesArray addObject:@(0.0f)]; [texturesArray addObject:@(1.0f)];
+            }
+        }
+    }
+    return texturesArray;
+}
+
+- (NSMutableArray*) CreateNSTextureVertices {
+    texturesArray = [[NSMutableArray alloc] init];
+    for (int i = 0; i < width; i++) {
+        for (int j = 0; j < height; j++) {
+            if (maze->GetCell(i, j).northWallPresent || maze->GetCell(i, j).southWallPresent) {
+                [texturesArray addObject:@(1.0f)]; [texturesArray addObject:@(0.0f)];
+                [texturesArray addObject:@(0.0f)]; [texturesArray addObject:@(0.0f)];
+                [texturesArray addObject:@(0.0f)]; [texturesArray addObject:@(1.0f)];
+                
+                [texturesArray addObject:@(1.0f)]; [texturesArray addObject:@(0.0f)];
+                [texturesArray addObject:@(1.0f)]; [texturesArray addObject:@(1.0f)];
+                [texturesArray addObject:@(0.0f)]; [texturesArray addObject:@(1.0f)];
+            }
         }
     }
     return texturesArray;
@@ -82,6 +118,24 @@ GLKVector3 cubeVertex[8] =
     return normalArray;
 }
 
+- (NSMutableArray*) CreateEWNormalVertices {
+    normalArray = [[NSMutableArray alloc] init];
+    for (int i = 0; i < width; i++) {
+        for (int j = 0; j < height; j++) {
+            if (maze->GetCell(i, j).westWallPresent) {
+                [self addNormals :GLKVector3Make(0.0f, 0.0f, 1.0)];
+                [self addNormals :GLKVector3Make(0.0f, 0.0f, 1.0)];
+            }
+            if (maze->GetCell(i, j).eastWallPresent) {
+                [self addNormals :GLKVector3Make(0.0f, 0.0f, -1.0)];
+                [self addNormals :GLKVector3Make(0.0f, 0.0f, -1.0)];
+            }
+            
+        }
+    }
+    return normalArray;
+}
+
 - (NSMutableArray*) CreateEWWallVertices {
     verticesArray = [[NSMutableArray alloc] init];
     for (int i = 0; i < width; i++) {
@@ -91,13 +145,31 @@ GLKVector3 cubeVertex[8] =
                 [self addVertices:i :j : cubeVertex[4]: cubeVertex[6]: cubeVertex[2]];
             }
             if (maze->GetCell(i, j).eastWallPresent) {
-                [self addVertices:i :j : cubeVertex[5]: cubeVertex[1]: cubeVertex[3]];                
+                [self addVertices:i :j : cubeVertex[5]: cubeVertex[1]: cubeVertex[3]];
                 [self addVertices:i :j : cubeVertex[7]: cubeVertex[5]: cubeVertex[3]];
             }
         }
     }
     
     return verticesArray;
+}
+
+- (NSMutableArray*) CreateNSNormalVertices {
+    normalArray = [[NSMutableArray alloc] init];
+    for (int i = 0; i < width; i++) {
+        for (int j = 0; j < height; j++) {
+            if (maze->GetCell(i, j).southWallPresent) {
+                [self addNormals :GLKVector3Make(1.0f, 0.0f, 0.0)];
+                [self addNormals :GLKVector3Make(1.0f, 0.0f, 0.0)];
+            }
+            if (maze->GetCell(i, j).northWallPresent) {
+                [self addNormals :GLKVector3Make(-1.0f, 0.0f, 0.0)];
+                [self addNormals :GLKVector3Make(-1.0f, 0.0f, 0.0)];
+            }
+            
+        }
+    }
+    return normalArray;
 }
 
 - (NSMutableArray*) CreateNSWallVertices {

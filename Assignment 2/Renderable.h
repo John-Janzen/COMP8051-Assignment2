@@ -17,7 +17,7 @@
     GLfloat *_arrayVertices, *_textureArray, *_normalArray;
     GLuint _vertexArray, _vertexBuffer[3];
     GLKVector3 _positionVector, _rotateVector, _scaleVector;
-    GLuint _texture;
+    NSString *_texture;
     @private
     GLKMatrix4 _modelMatrix, _modelViewProjection;
     GLKMatrix3 _normalMatrix;

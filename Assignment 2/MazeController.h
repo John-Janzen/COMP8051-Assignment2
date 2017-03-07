@@ -15,8 +15,12 @@
 - (NSMutableArray*) CreateFloorVertices;
 - (NSMutableArray*) CreateFloorNormalVertices;
 - (NSMutableArray*) CreateEWWallVertices;
+- (NSMutableArray*) CreateEWNormalVertices;
 - (NSMutableArray*) CreateNSWallVertices;
-- (NSMutableArray*) CreateTextureVertices;
+- (NSMutableArray*) CreateNSNormalVertices;
+- (NSMutableArray*) CreateFloorTextureVertices;
+- (NSMutableArray*) CreateEWTextureVertices;
+- (NSMutableArray*) CreateNSTextureVertices;
 - (void) addVertices : (int) i : (int) j : (GLKVector3) x : (GLKVector3) y : (GLKVector3) z;
 - (void) addNormals : (GLKVector3) normal;
 

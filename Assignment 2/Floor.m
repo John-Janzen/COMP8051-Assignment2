@@ -14,7 +14,7 @@
 
 - (id) init:(GLKVector3)pos :(GLKVector3)rot :(GLKVector3)scale
            :(GLfloat)renderType :(GLfloat)num :(GLfloat *)array :(GLfloat) count
-           : (GLfloat*) txtArray : (GLuint) texture : (GLfloat) size : (GLfloat*) normArray : (GLfloat) size3{
+           : (GLfloat*) txtArray : (NSString*) texture : (GLfloat) size : (GLfloat*) normArray : (GLfloat) size3{
     self = [super init];
     if (self) {
         _positionVector = pos;
