@@ -48,7 +48,7 @@ GLKVector3 cubeVertex[8] =
     for (int i = 0; i < width; i++) {
         for (int j = 0; j < height; j++) {
             [self addVertices:i :j : cubeVertex[6]: cubeVertex[2]: cubeVertex[3]];
-            [self addVertices:i :j : cubeVertex[6]: cubeVertex[7]: cubeVertex[3]];
+            [self addVertices:i :j : cubeVertex[3]: cubeVertex[7]: cubeVertex[6]];
             
         }
     }
@@ -59,13 +59,13 @@ GLKVector3 cubeVertex[8] =
     texturesArray = [[NSMutableArray alloc] init];
     for (int i = 0; i < width; i++) {
         for (int j = 0; j < height; j++) {
-            [texturesArray addObject:@(1.0f)]; [texturesArray addObject:@(0.0f)];
-            [texturesArray addObject:@(0.0f)]; [texturesArray addObject:@(0.0f)];
-            [texturesArray addObject:@(0.0f)]; [texturesArray addObject:@(1.0f)];
-                
-            [texturesArray addObject:@(1.0f)]; [texturesArray addObject:@(0.0f)];
             [texturesArray addObject:@(1.0f)]; [texturesArray addObject:@(1.0f)];
             [texturesArray addObject:@(0.0f)]; [texturesArray addObject:@(1.0f)];
+            [texturesArray addObject:@(0.0f)]; [texturesArray addObject:@(0.0f)];
+            
+            [texturesArray addObject:@(0.0f)]; [texturesArray addObject:@(0.0f)];
+            [texturesArray addObject:@(1.0f)]; [texturesArray addObject:@(0.0f)];
+            [texturesArray addObject:@(1.0f)]; [texturesArray addObject:@(1.0f)];
         }
     }
     return texturesArray;
@@ -75,14 +75,23 @@ GLKVector3 cubeVertex[8] =
     texturesArray = [[NSMutableArray alloc] init];
     for (int i = 0; i < width; i++) {
         for (int j = 0; j < height; j++) {
-            if (maze->GetCell(i, j).westWallPresent || maze->GetCell(i, j).eastWallPresent) {
-                [texturesArray addObject:@(1.0f)]; [texturesArray addObject:@(0.0f)];
-                [texturesArray addObject:@(0.0f)]; [texturesArray addObject:@(0.0f)];
-                [texturesArray addObject:@(0.0f)]; [texturesArray addObject:@(1.0f)];
-                
-                [texturesArray addObject:@(1.0f)]; [texturesArray addObject:@(0.0f)];
+            if (maze->GetCell(i, j).westWallPresent) {
                 [texturesArray addObject:@(1.0f)]; [texturesArray addObject:@(1.0f)];
                 [texturesArray addObject:@(0.0f)]; [texturesArray addObject:@(1.0f)];
+                [texturesArray addObject:@(0.0f)]; [texturesArray addObject:@(0.0f)];
+                
+                [texturesArray addObject:@(0.0f)]; [texturesArray addObject:@(0.0f)];
+                [texturesArray addObject:@(1.0f)]; [texturesArray addObject:@(0.0f)];
+                [texturesArray addObject:@(1.0f)]; [texturesArray addObject:@(1.0f)];
+            }
+            if (maze->GetCell(i, j).eastWallPresent) {
+                [texturesArray addObject:@(0.0f)]; [texturesArray addObject:@(0.0f)];
+                [texturesArray addObject:@(0.0f)]; [texturesArray addObject:@(1.0f)];
+                [texturesArray addObject:@(1.0f)]; [texturesArray addObject:@(1.0f)];
+                
+                [texturesArray addObject:@(1.0f)]; [texturesArray addObject:@(1.0f)];
+                [texturesArray addObject:@(1.0f)]; [texturesArray addObject:@(0.0f)];
+                [texturesArray addObject:@(0.0f)]; [texturesArray addObject:@(0.0f)];
             }
         }
     }
@@ -93,14 +102,23 @@ GLKVector3 cubeVertex[8] =
     texturesArray = [[NSMutableArray alloc] init];
     for (int i = 0; i < width; i++) {
         for (int j = 0; j < height; j++) {
-            if (maze->GetCell(i, j).northWallPresent || maze->GetCell(i, j).southWallPresent) {
-                [texturesArray addObject:@(1.0f)]; [texturesArray addObject:@(0.0f)];
-                [texturesArray addObject:@(0.0f)]; [texturesArray addObject:@(0.0f)];
-                [texturesArray addObject:@(0.0f)]; [texturesArray addObject:@(1.0f)];
-                
-                [texturesArray addObject:@(1.0f)]; [texturesArray addObject:@(0.0f)];
+            if (maze->GetCell(i, j).northWallPresent) {
                 [texturesArray addObject:@(1.0f)]; [texturesArray addObject:@(1.0f)];
                 [texturesArray addObject:@(0.0f)]; [texturesArray addObject:@(1.0f)];
+                [texturesArray addObject:@(0.0f)]; [texturesArray addObject:@(0.0f)];
+                
+                [texturesArray addObject:@(0.0f)]; [texturesArray addObject:@(0.0f)];
+                [texturesArray addObject:@(1.0f)]; [texturesArray addObject:@(0.0f)];
+                [texturesArray addObject:@(1.0f)]; [texturesArray addObject:@(1.0f)];
+            }
+            if (maze->GetCell(i, j).southWallPresent) {
+                [texturesArray addObject:@(1.0f)]; [texturesArray addObject:@(1.0f)];
+                [texturesArray addObject:@(0.0f)]; [texturesArray addObject:@(1.0f)];
+                [texturesArray addObject:@(0.0f)]; [texturesArray addObject:@(0.0f)];
+                
+                [texturesArray addObject:@(0.0f)]; [texturesArray addObject:@(0.0f)];
+                [texturesArray addObject:@(1.0f)]; [texturesArray addObject:@(0.0f)];
+                [texturesArray addObject:@(1.0f)]; [texturesArray addObject:@(1.0f)];
             }
         }
     }
@@ -141,12 +159,12 @@ GLKVector3 cubeVertex[8] =
     for (int i = 0; i < width; i++) {
         for (int j = 0; j < height; j++) {
             if (maze->GetCell(i, j).westWallPresent) {
-                [self addVertices:i :j : cubeVertex[0]: cubeVertex[4]: cubeVertex[2]];
-                [self addVertices:i :j : cubeVertex[4]: cubeVertex[6]: cubeVertex[2]];
+                [self addVertices:i :j : cubeVertex[4]: cubeVertex[0]: cubeVertex[2]];
+                [self addVertices:i :j : cubeVertex[2]: cubeVertex[6]: cubeVertex[4]];
             }
             if (maze->GetCell(i, j).eastWallPresent) {
-                [self addVertices:i :j : cubeVertex[5]: cubeVertex[1]: cubeVertex[3]];
-                [self addVertices:i :j : cubeVertex[7]: cubeVertex[5]: cubeVertex[3]];
+                [self addVertices:i :j : cubeVertex[3]: cubeVertex[1]: cubeVertex[5]];
+                [self addVertices:i :j : cubeVertex[5]: cubeVertex[7]: cubeVertex[3]];
             }
         }
     }
@@ -158,11 +176,11 @@ GLKVector3 cubeVertex[8] =
     normalArray = [[NSMutableArray alloc] init];
     for (int i = 0; i < width; i++) {
         for (int j = 0; j < height; j++) {
-            if (maze->GetCell(i, j).southWallPresent) {
+            if (maze->GetCell(i, j).northWallPresent) {
                 [self addNormals :GLKVector3Make(1.0f, 0.0f, 0.0)];
                 [self addNormals :GLKVector3Make(1.0f, 0.0f, 0.0)];
             }
-            if (maze->GetCell(i, j).northWallPresent) {
+            if (maze->GetCell(i, j).southWallPresent) {
                 [self addNormals :GLKVector3Make(-1.0f, 0.0f, 0.0)];
                 [self addNormals :GLKVector3Make(-1.0f, 0.0f, 0.0)];
             }
@@ -176,13 +194,13 @@ GLKVector3 cubeVertex[8] =
     verticesArray = [[NSMutableArray alloc] init];
     for (int i = 0; i < width; i++) {
         for (int j = 0; j < height; j++) {
-            if (maze->GetCell(i, j).southWallPresent) {
-                [self addVertices:i :j : cubeVertex[1]: cubeVertex[0]: cubeVertex[3]];
-                [self addVertices:i :j : cubeVertex[0]: cubeVertex[2]: cubeVertex[3]];
-            }
             if (maze->GetCell(i, j).northWallPresent) {
-                [self addVertices:i :j : cubeVertex[5]: cubeVertex[4]: cubeVertex[7]];
-                [self addVertices:i :j : cubeVertex[4]: cubeVertex[6]: cubeVertex[7]];
+                [self addVertices:i :j : cubeVertex[0]: cubeVertex[1]: cubeVertex[3]];
+                [self addVertices:i :j : cubeVertex[3]: cubeVertex[2]: cubeVertex[0]];
+            }
+            if (maze->GetCell(i, j).southWallPresent) {
+                [self addVertices:i :j : cubeVertex[5]: cubeVertex[4]: cubeVertex[6]];
+                [self addVertices:i :j : cubeVertex[6]: cubeVertex[7]: cubeVertex[5]];
             }
         }
     }

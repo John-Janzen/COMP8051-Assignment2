@@ -105,10 +105,6 @@ enum
                                            : GL_TRIANGLES: (size / 3) : NSWallVertices : size : textureArray : @"wallNSTexture.jpg" : size2 : normalVertices : size3]];
     moving = -5.0f;
     
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
-    glFrontFace(GL_CCW);
-    
     [self setupGL];
 }
 
@@ -154,6 +150,8 @@ enum
     //self.effect.light0.diffuseColor = GLKVector4Make(1.0f, 0.4f, 0.4f, 1.0f);
     
     glEnable(GL_DEPTH_TEST);
+    glFrontFace(GL_CCW);
+    glEnable(GL_CULL_FACE);
     
     for (Renderable *render in renders) {
         
