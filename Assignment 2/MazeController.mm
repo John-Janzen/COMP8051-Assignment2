@@ -89,13 +89,13 @@ GLKVector3 cubeVertex[8] =
 - (NSMutableArray*) CreateEastTextureVertices:(int)i :(int)j {
     texturesArray = [[NSMutableArray alloc] init];
     if (maze->GetCell(i, j).eastWallPresent) {
-        [texturesArray addObject:@(0.0f)]; [texturesArray addObject:@(0.0f)];
-        [texturesArray addObject:@(0.0f)]; [texturesArray addObject:@(1.0f)];
-        [texturesArray addObject:@(1.0f)]; [texturesArray addObject:@(1.0f)];
-        
         [texturesArray addObject:@(1.0f)]; [texturesArray addObject:@(1.0f)];
         [texturesArray addObject:@(1.0f)]; [texturesArray addObject:@(0.0f)];
         [texturesArray addObject:@(0.0f)]; [texturesArray addObject:@(0.0f)];
+        
+        [texturesArray addObject:@(0.0f)]; [texturesArray addObject:@(0.0f)];
+        [texturesArray addObject:@(0.0f)]; [texturesArray addObject:@(1.0f)];
+        [texturesArray addObject:@(1.0f)]; [texturesArray addObject:@(1.0f)];
     }
     return texturesArray;
 }
