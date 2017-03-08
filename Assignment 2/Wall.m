@@ -1,19 +1,26 @@
 //
-//  Floor.m
+//  Wall.m
 //  Assignment 2
 //
-//  Created by John Janzen on 2017-03-04.
+//  Created by John Janzen on 2017-03-08.
 //  Copyright © 2017 John Janzen. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
-#include "Renderable.h"
-#include "Floor.h"
+#include "Wall.h"
 
-@implementation Floor
+@interface Wall () {
+    
+}
+
+@end
+
+
+@implementation Wall
 
 - (id) init:(GLKVector3)pos :(GLKVector3)rot :(GLKVector3)scale
-           :(GLfloat)renderType :(GLfloat)num :(GLfloat *)array :(GLfloat) count : (int) textureNum {
+           :(GLfloat)renderType :(GLfloat)num :(GLfloat *)array :(GLfloat) count
+           :(int) textureNum{
     self = [super init];
     if (self) {
         _positionVector = pos;

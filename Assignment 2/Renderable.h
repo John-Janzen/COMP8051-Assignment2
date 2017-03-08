@@ -14,10 +14,10 @@
 @interface Renderable : NSObject {
     
     @public
-    GLfloat *_arrayVertices, *_textureArray, *_normalArray;
-    GLuint _vertexArray, _vertexBuffer[3];
+    GLfloat *_arrayVertices;
+    GLuint _vertexArray, _vertexBuffer[1];
     GLKVector3 _positionVector, _rotateVector, _scaleVector;
-    NSString *_texture;
+    int _texture;
     @private
     GLKMatrix4 _modelMatrix, _modelViewProjection;
     GLKMatrix3 _normalMatrix;

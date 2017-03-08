@@ -12,6 +12,7 @@
 #include "MazeController.h"
 #include "Floor.h"
 #include "TextureLoad.h"
+#include "Wall.h"
 
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
@@ -42,10 +43,10 @@ enum
     NSMutableArray *renders;
     MazeController *maze;
     TextureLoad *textureLoader;
-    GLfloat *floorVertices, *EWWallVertices, *NSWallVertices, *textureArray, *normalVertices;
+    GLfloat *floorVertices, *WallVertices, *textureArray, *normalVertices;
     float moving, moving2;
     int height, width;
-    GLuint texture[3];
+    GLuint texture[5];
     
 }
 @property (strong, nonatomic) EAGLContext *context;
@@ -58,11 +59,12 @@ enum
 - (BOOL)compileShader:(GLuint *)shader type:(GLenum)type file:(NSString *)file;
 - (BOOL)linkProgram:(GLuint)prog;
 - (BOOL)validateProgram:(GLuint)prog;
-- (float)createFloor;
-- (float)createEWWalls;
-- (float)createNSWalls;
-- (float)createEWTexture;
-- (float)createNSTexture;
+- (void)createFloor;
+- (void)CreateWestWalls;
+- (void)CreateEastWalls;
+- (void)CreateNorthWalls;
+- (void)CreateSouthWalls;
+- (NSMutableArray*) combineArrays : (NSMutableArray*) vert : (NSMutableArray*) norm : (NSMutableArray*) tex;
 @end
 
 @implementation GameViewController
@@ -87,22 +89,21 @@ enum
     textureLoader = [[TextureLoad alloc] init];
     width = height = 4;
     [maze Create:width :height];
-    float size = [self createFloor];
-    float size2 = [self createFloorTexture];
-    float size3 = [self createFloorNormals];
+    [self createFloor];
     
-    [renders addObject:[[Floor alloc] init : GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(1.0f, 1.0f, 1.0f)
-                                           : GL_TRIANGLES: (size / 3) : floorVertices : size : textureArray : @"floorTexture.jpg" : size2 : normalVertices : size3]];
-    size = [self createEWWalls];
-    size2 = [self createEWTexture];
-    size3 = [self createEWNormals];
-    [renders addObject:[[Floor alloc] init : GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(1.0f, 1.0f, 1.0f)
-                                           : GL_TRIANGLES: (size / 3) : EWWallVertices : size : textureArray : @"wallEWTexture.jpg" : size2 : normalVertices : size3]];
-    size = [self createNSWalls];
-    size2 = [self createNSTexture];
-    size3 = [self createNSNormals];
-    [renders addObject:[[Floor alloc] init : GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(1.0f, 1.0f, 1.0f)
-                                           : GL_TRIANGLES: (size / 3) : NSWallVertices : size : textureArray : @"wallNSTexture.jpg" : size2 : normalVertices : size3]];
+
+    [self CreateWestWalls];
+    [self CreateEastWalls];
+    [self CreateNorthWalls];
+    [self CreateSouthWalls];
+    //[renders addObject:[[Floor alloc] init : GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(1.0f, 1.0f, 1.0f)
+                                           //: GL_TRIANGLES: (size / 3) : EWWallVertices : size : textureArray : @"wallEWTexture.jpg" : size2 : normalVertices : size3]];
+    //size = [self createNSWalls];
+    //size2 = [self createNSTexture];
+    //size3 = [self createNSNormals];
+    //[renders addObject:[[Floor alloc] init : GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(1.0f, 1.0f, 1.0f)
+                                           //: GL_TRIANGLES: (size / 3) : NSWallVertices : size : textureArray : @"wallNSTexture.jpg" : size2 : normalVertices : size3]];
+    
     moving = -5.0f;
     
     [self setupGL];
@@ -142,7 +143,6 @@ enum
 - (void)setupGL
 {
     [EAGLContext setCurrentContext:self.context];
-    int i = 0;
     [self loadShaders];
     
     //self.effect = [[GLKBaseEffect alloc] init];
@@ -159,26 +159,24 @@ enum
         glGenVertexArraysOES(1, &render->_vertexArray);
         glBindVertexArrayOES(render->_vertexArray);
         
-        glGenBuffers(3, render->_vertexBuffer);
+        glGenBuffers(1, render->_vertexBuffer);
         
         glBindBuffer(GL_ARRAY_BUFFER, render->_vertexBuffer[0]);
         glBufferData(GL_ARRAY_BUFFER, [render getArraySize], render->_arrayVertices, GL_STATIC_DRAW);
         glEnableVertexAttribArray(GLKVertexAttribPosition);
-        glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), BUFFER_OFFSET(0));
-        
-        glBindBuffer(GL_ARRAY_BUFFER, render->_vertexBuffer[1]);
-        glBufferData(GL_ARRAY_BUFFER, [render getNormArraySize], render->_normalArray, GL_STATIC_DRAW);
+        glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, 32, BUFFER_OFFSET(0));
         glEnableVertexAttribArray(GLKVertexAttribNormal);
-        glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), BUFFER_OFFSET(0));
-        
-        glBindBuffer(GL_ARRAY_BUFFER, render->_vertexBuffer[2]);
-        glBufferData(GL_ARRAY_BUFFER, [render getTxtArraySize], render->_textureArray, GL_STATIC_DRAW);
+        glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, 32, BUFFER_OFFSET(12));
         glEnableVertexAttribArray(GLKVertexAttribTexCoord0);
-        glVertexAttribPointer(GLKVertexAttribTexCoord0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), BUFFER_OFFSET(0));
+        glVertexAttribPointer(GLKVertexAttribTexCoord0, 2, GL_FLOAT, GL_FALSE, 32, BUFFER_OFFSET(24));
         
         glBindVertexArrayOES(0);
         
-        texture[i++] =  [textureLoader loadTexture:(render->_texture)];
+        texture[0] =  [textureLoader loadTexture:@"floorTexture.jpg"];
+        texture[1] =  [textureLoader loadTexture:@"leftArrowTexture.jpg"];
+        texture[2] =  [textureLoader loadTexture:@"rightArrowTexture.jpg"];
+        texture[3] =  [textureLoader loadTexture:@"NoPassTexture.jpg"];
+        texture[4] =  [textureLoader loadTexture:@"leftAndRightArrowsTexture.jpg"];
         glActiveTexture(GL_TEXTURE0);
         glUniform1i(uniforms[UNIFORM_TEXTURE], 0);
     }
@@ -189,10 +187,10 @@ enum
     [EAGLContext setCurrentContext:self.context];
     
     for (Renderable *render in renders) {
-        glDeleteBuffers(3, render->_vertexBuffer);
+        glDeleteBuffers(1, render->_vertexBuffer);
         glDeleteVertexArraysOES(1, &render->_vertexArray);
     }
-    
+    free(texture);
     self.effect = nil;
     
     if (_program) {
@@ -231,10 +229,9 @@ enum
 {
     glClearColor(0.65f, 0.65f, 0.65f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    int i = 0;
     for (Renderable *render in renders) {
         glBindVertexArrayOES(render->_vertexArray);
-        glBindTexture(GL_TEXTURE_2D, texture[i++]);
+        glBindTexture(GL_TEXTURE_2D, texture[render->_texture]);
         
         // Render the object again with ES2
         glUseProgram(_program);
@@ -419,85 +416,162 @@ enum
     }
 }
 
-- (float) createFloor {
+- (void) createFloor {
     NSMutableArray *floor = [maze CreateFloorVertices];
-    floorVertices = (GLfloat*)malloc([floor count] * sizeof(GLfloat));
-    for (int i = 0; i < [floor count]; i++) {
-        floorVertices[i] = [floor[i] floatValue];
-    }
-    return floor.count;
-}
-
-- (float) createEWWalls {
-    NSMutableArray *walls = [maze CreateEWWallVertices];
-    EWWallVertices = (GLfloat*)malloc([walls count] * sizeof(GLfloat));
-    for (int i = 0; i < [walls count]; i++) {
-        EWWallVertices[i] = [walls[i] floatValue];
-    }
-    return walls.count;
-}
-
-- (float) createEWNormals {
-    NSMutableArray *norm = [maze CreateEWNormalVertices];
-    normalVertices = (GLfloat*)malloc([norm count] * sizeof(GLfloat));
-    for (int i = 0; i < [norm count]; i++) {
-        normalVertices[i] = [norm[i] floatValue];
-    }
-    return norm.count;
-}
-
-- (float) createNSWalls {
-    NSMutableArray *walls = [maze CreateNSWallVertices];
-    NSWallVertices = (GLfloat*)malloc([walls count] * sizeof(GLfloat));
-    for (int i = 0; i < [walls count]; i++) {
-        NSWallVertices[i] = [walls[i] floatValue];
-    }
-    return walls.count;
-}
-
-- (float) createNSNormals {
-    NSMutableArray *norm = [maze CreateNSNormalVertices];
-    normalVertices = (GLfloat*)malloc([norm count] * sizeof(GLfloat));
-    for (int i = 0; i < [norm count]; i++) {
-        normalVertices[i] = [norm[i] floatValue];
-    }
-    return norm.count;
-}
-
-- (float) createFloorTexture {
-    NSMutableArray *text = [maze CreateFloorTextureVertices];
-    textureArray = (GLfloat*)malloc([text count] * sizeof(GLfloat));
-    for (int i = 0; i < [text count]; i++) {
-        textureArray[i] = [text[i] floatValue];
-    }
-    return text.count;
-}
-
-- (float) createEWTexture {
-    NSMutableArray *text = [maze CreateEWTextureVertices];
-    textureArray = (GLfloat*)malloc([text count] * sizeof(GLfloat));
-    for (int i = 0; i < [text count]; i++) {
-        textureArray[i] = [text[i] floatValue];
-    }
-    return text.count;
-}
-
-- (float) createNSTexture {
-    NSMutableArray *text = [maze CreateNSTextureVertices];
-    textureArray = (GLfloat*)malloc([text count] * sizeof(GLfloat));
-    for (int i = 0; i < [text count]; i++) {
-        textureArray[i] = [text[i] floatValue];
-    }
-    return text.count;
-}
-
-- (float) createFloorNormals {
     NSMutableArray *norm = [maze CreateFloorNormalVertices];
-    normalVertices = (GLfloat*)malloc([norm count] * sizeof(GLfloat));
-    for (int i = 0; i < [norm count]; i++) {
-        normalVertices[i] = [norm[i] floatValue];
+    NSMutableArray *text = [maze CreateFloorTextureVertices];
+    NSMutableArray *combine = [self combineArrays:floor :norm :text];
+    [floor removeAllObjects];
+    [norm removeAllObjects];
+    [text removeAllObjects];
+    WallVertices = (GLfloat*)malloc([combine count] * sizeof(GLfloat));
+    for (int i = 0; i < [combine count]; i++) {
+        WallVertices[i] = [combine[i] floatValue];
     }
-    return norm.count;
+    floorVertices = (GLfloat*)malloc([floor count] * sizeof(GLfloat));
+    [renders addObject:[[Floor alloc] init : GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(1.0f, 1.0f, 1.0f)
+                                           : GL_TRIANGLES: combine.count / 8 : WallVertices : combine.count : 0]];
 }
+
+- (void) CreateWestWalls{
+    for (int i = 0; i < width; i++) {
+        for (int j = 0; j < height; j++) {
+            NSMutableArray *vertices = [maze CreateWestWallVertices: i: j];
+            if (vertices.count == 0) {
+                continue;
+            }
+            NSMutableArray *norm = [maze CreateWestNormalVertices: i : j];
+            NSMutableArray *text = [maze CreateWestTextureVertices : i : j];
+            NSMutableArray *combine = [self combineArrays :vertices :norm :text];
+            [vertices removeAllObjects];
+            [text removeAllObjects];
+            [norm removeAllObjects];
+            WallVertices = (GLfloat*)malloc([combine count] * sizeof(GLfloat));
+            for (int i = 0; i < [combine count]; i++) {
+                WallVertices[i] = [combine[i] floatValue];
+            }
+            [renders addObject:[[Wall alloc] init: GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(1.0f, 1.0f, 1.0f)
+                                                 : GL_TRIANGLES : (combine.count / 8) : WallVertices : combine.count : [maze getDirectionText : i : j : WALLEAST]]];
+        }
+    }
+}
+
+- (void) CreateEastWalls{
+    for (int i = 0; i < width; i++) {
+        for (int j = 0; j < height; j++) {
+            NSMutableArray *vertices = [maze CreateEastWallVertices: i: j];
+            if (vertices.count == 0) {
+                continue;
+            }
+            NSMutableArray *norm = [maze CreateEastNormalVertices: i : j];
+            NSMutableArray *text = [maze CreateEastTextureVertices : i : j];
+            NSMutableArray *combine = [self combineArrays :vertices :norm :text];
+            [vertices removeAllObjects];
+            [text removeAllObjects];
+            [norm removeAllObjects];
+            WallVertices = (GLfloat*)malloc([combine count] * sizeof(GLfloat));
+            for (int i = 0; i < [combine count]; i++) {
+                WallVertices[i] = [combine[i] floatValue];
+            }
+            [renders addObject:[[Wall alloc] init: GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(1.0f, 1.0f, 1.0f)
+                                                 : GL_TRIANGLES : (combine.count / 3) : WallVertices : combine.count : [maze getDirectionText : i : j : WALLEAST]]];
+        }
+    }
+}
+
+- (void) CreateNorthWalls{
+    for (int i = 0; i < width; i++) {
+        for (int j = 0; j < height; j++) {
+            NSMutableArray *vertices = [maze CreateNorthWallVertices: i: j];
+            if (vertices.count == 0) {
+                continue;
+            }
+            NSMutableArray *norm = [maze CreateNorthNormalVertices: i : j];
+            NSMutableArray *text = [maze CreateNorthTextureVertices : i : j];
+            NSMutableArray *combine = [self combineArrays :vertices :norm :text];
+            [vertices removeAllObjects];
+            [text removeAllObjects];
+            [norm removeAllObjects];
+            WallVertices = (GLfloat*)malloc([combine count] * sizeof(GLfloat));
+            for (int i = 0; i < [combine count]; i++) {
+                WallVertices[i] = [combine[i] floatValue];
+            }
+            [renders addObject:[[Wall alloc] init: GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(1.0f, 1.0f, 1.0f)
+                                                 : GL_TRIANGLES : (combine.count / 3) : WallVertices : combine.count : [maze getDirectionText : i : j : WALLNORTH]]];
+        }
+    }
+}
+
+- (void) CreateSouthWalls{
+    for (int i = 0; i < width; i++) {
+        for (int j = 0; j < height; j++) {
+            NSMutableArray *vertices = [maze CreateSouthWallVertices: i: j];
+            if (vertices.count == 0) {
+                continue;
+            }
+            NSMutableArray *norm = [maze CreateSouthNormalVertices: i : j];
+            NSMutableArray *text = [maze CreateSouthTextureVertices : i : j];
+            NSMutableArray *combine = [self combineArrays :vertices :norm :text];
+            [vertices removeAllObjects];
+            [text removeAllObjects];
+            [norm removeAllObjects];
+            WallVertices = (GLfloat*)malloc([combine count] * sizeof(GLfloat));
+            for (int i = 0; i < [combine count]; i++) {
+                WallVertices[i] = [combine[i] floatValue];
+            }
+            [renders addObject:[[Wall alloc] init: GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(1.0f, 1.0f, 1.0f)
+                                                 : GL_TRIANGLES : (combine.count / 3) : WallVertices : combine.count : [maze getDirectionText : i : j : WALLSOUTH]]];
+        }
+    }
+}
+
+- (NSMutableArray*) combineArrays : (NSMutableArray*) vert : (NSMutableArray*) norm : (NSMutableArray*) tex {
+    NSMutableArray *combined = [[NSMutableArray alloc] init];
+    int j = 0;
+    for (int i = 0; i < vert.count; i += 3) {
+        [combined addObject:vert[i]]; [combined addObject:vert[i +1]]; [combined addObject:vert[i +2]];
+        [combined addObject:norm[i]]; [combined addObject:norm[i +1]]; [combined addObject:norm[i +2]];
+        [combined addObject:tex[j]]; [combined addObject:tex[j +1]];
+        j += 2;
+    }
+    return combined;
+}
+
+//- (float) createNSNormals {
+//    NSMutableArray *norm = [maze CreateNSNormalVertices];
+//    normalVertices = (GLfloat*)malloc([norm count] * sizeof(GLfloat));
+//    for (int i = 0; i < [norm count]; i++) {
+//        normalVertices[i] = [norm[i] floatValue];
+//    }
+//    return norm.count;
+//}
+
+//- (float) createFloorTexture {
+//    
+//    return text.count;
+//}
+
+//- (float) createEWTexture {
+//    NSMutableArray *text = [maze CreateEWTextureVertices];
+//    textureArray = (GLfloat*)malloc([text count] * sizeof(GLfloat));
+//    for (int i = 0; i < [text count]; i++) {
+//        textureArray[i] = [text[i] floatValue];
+//    }
+//    return text.count;
+//}
+
+//- (float) createNSTexture {
+//    NSMutableArray *text = [maze CreateNSTextureVertices];
+//    textureArray = (GLfloat*)malloc([text count] * sizeof(GLfloat));
+//    for (int i = 0; i < [text count]; i++) {
+//        textureArray[i] = [text[i] floatValue];
+//    }
+//    return text.count;
+//}
+
+//- (float) createFloorNormals {
+//    
+//    return norm.count;
+//}
 
 @end

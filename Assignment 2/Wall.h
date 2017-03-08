@@ -1,21 +1,22 @@
 //
-//  Floor.h
+//  Wall.h
 //  Assignment 2
 //
-//  Created by John Janzen on 2017-03-04.
+//  Created by John Janzen on 2017-03-08.
 //  Copyright © 2017 John Janzen. All rights reserved.
 //
 
-#ifndef Floor_h
-#define Floor_h
+#ifndef Wall_h
+#define Wall_h
+#include "Renderable.h"
 
-@interface Floor : Renderable
+@interface Wall : Renderable
 
 - (id) init : (GLKVector3) pos : (GLKVector3) rot : (GLKVector3) scale
             : (GLfloat) renderType : (GLfloat) num : (GLfloat*) array
-            : (GLfloat) count : (int) textureNum;
+            : (GLfloat) count  : (int) textureNum;
 
 @end
 
 
-#endif /* Floor_h */
+#endif /* Wall_h */

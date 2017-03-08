@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1347130A1E709F6700D3A3F7 /* Wall.m in Sources */ = {isa = PBXBuildFile; fileRef = 134713091E709F6700D3A3F7 /* Wall.m */; };
+		1347130D1E70AD0700D3A3F7 /* NoPassTexture.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 1347130C1E70AD0700D3A3F7 /* NoPassTexture.jpg */; };
+		134713101E70C9B600D3A3F7 /* rightArrowTexture.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 1347130E1E70C9B600D3A3F7 /* rightArrowTexture.jpg */; };
+		134713111E70C9B600D3A3F7 /* leftArrowTexture.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 1347130F1E70C9B600D3A3F7 /* leftArrowTexture.jpg */; };
+		134713131E70CB4F00D3A3F7 /* leftAndRightArrowsTexture.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 134713121E70CB4F00D3A3F7 /* leftAndRightArrowsTexture.jpg */; };
 		138EC20A1E6F42E70056CB63 /* floorTexture.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 138EC2091E6F42E70056CB63 /* floorTexture.jpg */; };
 		138EC20E1E6F4A640056CB63 /* wallEWTexture.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 138EC20D1E6F4A640056CB63 /* wallEWTexture.jpg */; };
 		138EC2101E6F52F00056CB63 /* wallNSTexture.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 138EC20F1E6F52F00056CB63 /* wallNSTexture.jpg */; };
@@ -47,6 +52,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		134713091E709F6700D3A3F7 /* Wall.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Wall.m; sourceTree = "<group>"; };
+		1347130B1E709F7000D3A3F7 /* Wall.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Wall.h; sourceTree = "<group>"; };
+		1347130C1E70AD0700D3A3F7 /* NoPassTexture.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = NoPassTexture.jpg; sourceTree = "<group>"; };
+		1347130E1E70C9B600D3A3F7 /* rightArrowTexture.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = rightArrowTexture.jpg; sourceTree = "<group>"; };
+		1347130F1E70C9B600D3A3F7 /* leftArrowTexture.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = leftArrowTexture.jpg; sourceTree = "<group>"; };
+		134713121E70CB4F00D3A3F7 /* leftAndRightArrowsTexture.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = leftAndRightArrowsTexture.jpg; sourceTree = "<group>"; };
 		138EC2091E6F42E70056CB63 /* floorTexture.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = floorTexture.jpg; sourceTree = "<group>"; };
 		138EC20D1E6F4A640056CB63 /* wallEWTexture.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = wallEWTexture.jpg; sourceTree = "<group>"; };
 		138EC20F1E6F52F00056CB63 /* wallNSTexture.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = wallNSTexture.jpg; sourceTree = "<group>"; };
@@ -132,6 +143,10 @@
 		EC35B4C31E6BB6140010DE64 /* Assignment 2 */ = {
 			isa = PBXGroup;
 			children = (
+				134713121E70CB4F00D3A3F7 /* leftAndRightArrowsTexture.jpg */,
+				1347130E1E70C9B600D3A3F7 /* rightArrowTexture.jpg */,
+				1347130F1E70C9B600D3A3F7 /* leftArrowTexture.jpg */,
+				1347130C1E70AD0700D3A3F7 /* NoPassTexture.jpg */,
 				138EC20F1E6F52F00056CB63 /* wallNSTexture.jpg */,
 				138EC20D1E6F4A640056CB63 /* wallEWTexture.jpg */,
 				138EC2091E6F42E70056CB63 /* floorTexture.jpg */,
@@ -160,6 +175,8 @@
 				EC35B50E1E6BEFD40010DE64 /* Floor.h */,
 				EC56E3851E6D18CA00B6A7D2 /* TextureLoad.m */,
 				EC56E3871E6D18D400B6A7D2 /* TextureLoad.h */,
+				134713091E709F6700D3A3F7 /* Wall.m */,
+				1347130B1E709F7000D3A3F7 /* Wall.h */,
 			);
 			path = "Assignment 2";
 			sourceTree = "<group>";
@@ -299,14 +316,18 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				134713101E70C9B600D3A3F7 /* rightArrowTexture.jpg in Resources */,
 				EC35B4D31E6BB6140010DE64 /* Main.storyboard in Resources */,
 				EC35B4CD1E6BB6140010DE64 /* Shader.vsh in Resources */,
+				134713131E70CB4F00D3A3F7 /* leftAndRightArrowsTexture.jpg in Resources */,
 				138EC2101E6F52F00056CB63 /* wallNSTexture.jpg in Resources */,
 				EC35B4D51E6BB6140010DE64 /* Assets.xcassets in Resources */,
 				138EC20A1E6F42E70056CB63 /* floorTexture.jpg in Resources */,
+				1347130D1E70AD0700D3A3F7 /* NoPassTexture.jpg in Resources */,
 				EC35B4D81E6BB6140010DE64 /* LaunchScreen.storyboard in Resources */,
 				138EC20E1E6F4A640056CB63 /* wallEWTexture.jpg in Resources */,
 				EC35B4CB1E6BB6140010DE64 /* Shader.fsh in Resources */,
+				134713111E70C9B600D3A3F7 /* leftArrowTexture.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -334,6 +355,7 @@
 				EC35B5081E6BBD480010DE64 /* Cube.m in Sources */,
 				EC35B4FF1E6BB7FD0010DE64 /* DisjointSet.cpp in Sources */,
 				EC35B4C91E6BB6140010DE64 /* AppDelegate.m in Sources */,
+				1347130A1E709F6700D3A3F7 /* Wall.m in Sources */,
 				EC35B50D1E6BEFB90010DE64 /* Floor.m in Sources */,
 				EC35B5021E6BB8DF0010DE64 /* MazeController.mm in Sources */,
 				EC35B4D01E6BB6140010DE64 /* GameViewController.m in Sources */,
