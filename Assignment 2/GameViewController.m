@@ -21,7 +21,14 @@ enum
 {
     UNIFORM_MODELVIEWPROJECTION_MATRIX,
     UNIFORM_NORMAL_MATRIX,
+    UNIFORM_MODELVIEW_MATRIX,
     UNIFORM_TEXTURE,
+    UNIFORM_FLASHLIGHT_POSITION,
+    UNIFORM_DIFFUSE_LIGHT_POSITION,
+    UNIFORM_SHININESS,
+    UNIFORM_AMBIENT_COMPONENT,
+    UNIFORM_DIFFUSE_COMPONENT,
+    UNIFORM_SPECULAR_COMPONENT,
     NUM_UNIFORMS
     
 };
@@ -38,6 +45,12 @@ enum
 @interface GameViewController () {
     GLuint _program;
     
+    GLKVector3 flashlightPosition;
+    GLKVector3 diffuseLightPosition;
+    GLKVector4 diffuseComponent;
+    float shininess;
+    GLKVector4 specularComponent;
+    GLKVector4 ambientComponent;
     
     float _rotation;
     NSMutableArray *renders;
@@ -47,6 +60,17 @@ enum
     float moving, moving2;
     int height, width;
     GLuint texture[6];
+    
+    float cameraRotationSpeed;
+    
+    float cameraVerticalAngle;
+    float cameraHorizontalAngle;
+    
+    GLKVector3 cameraHorizontalMovement;
+    
+    GLKVector3 cameraPosition;
+    GLKVector3 cameraDirection;
+    GLKVector3 cameraUp;
     
 }
 @property (strong, nonatomic) EAGLContext *context;
@@ -59,12 +83,14 @@ enum
 - (BOOL)compileShader:(GLuint *)shader type:(GLenum)type file:(NSString *)file;
 - (BOOL)linkProgram:(GLuint)prog;
 - (BOOL)validateProgram:(GLuint)prog;
+- (void)specialUpdates:(Renderable*)render;
 - (void)createFloor;
 - (void)CreateWestWalls;
 - (void)CreateEastWalls;
 - (void)CreateNorthWalls;
 - (void)CreateSouthWalls;
 - (NSMutableArray*) combineArrays : (NSMutableArray*) vert : (NSMutableArray*) norm : (NSMutableArray*) tex;
+- (void) cameraUpdate;
 @end
 
 @implementation GameViewController
@@ -84,20 +110,22 @@ enum
     view.drawableDepthFormat = GLKViewDrawableDepthFormat24;
     
     renders = [[NSMutableArray alloc] init];
-    renders = [NSMutableArray arrayWithCapacity:1];
     maze = [[MazeController alloc] init];
     textureLoader = [[TextureLoad alloc] init];
-    width = height = 4;
+    width = height = 10;
+    cameraRotationSpeed = 0.002;
+    cameraPosition = GLKVector3Make((-width / 2.0f) - 0.5f, 0.5f, (-height / 2.0f) + 0.5f);
+    cameraUp = GLKVector3Make(0, 1, 0);
+    cameraVerticalAngle = 0.0f; cameraHorizontalAngle = -3.14159f / 2.0;
     [maze Create:width :height];
     [self createFloor];
     
-
     [self CreateWestWalls];
     [self CreateEastWalls];
     [self CreateNorthWalls];
     [self CreateSouthWalls];
     
-    [renders addObject:[[Cube alloc] init:@"Cube" :GLKVector3Make(-1.5f, 0.5f, -1.5f) :GLKVector3Make(0.0f, 0.0f, 0.0f) :GLKVector3Make(0.25f, 0.25f, 0.25f) : GL_TRIANGLES : 36 : NULL : 0 : 5]];
+    [renders addObject:[[Cube alloc] init:@"Cube" :GLKVector3Make( (-width / 2) + 0.5f, 0.5f, (-height / 2) + 0.5f) :GLKVector3Make(0.0f, 0.0f, 0.0f) :GLKVector3Make(0.25f, 0.25f, 0.25f) : GL_TRIANGLES : 36 : NULL : 0 : 5]];
     
     moving = 0.0f;
     
@@ -143,6 +171,24 @@ enum
     //self.effect = [[GLKBaseEffect alloc] init];
     //self.effect.light0.enabled = GL_TRUE;
     //self.effect.light0.diffuseColor = GLKVector4Make(1.0f, 0.4f, 0.4f, 1.0f);
+    uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX] = glGetUniformLocation(_program, "modelViewProjectionMatrix");
+    uniforms[UNIFORM_NORMAL_MATRIX] = glGetUniformLocation(_program, "normalMatrix");
+    uniforms[UNIFORM_MODELVIEW_MATRIX] = glGetUniformLocation(_program, "modelViewMatrix");
+    /* more needed here... */
+    uniforms[UNIFORM_TEXTURE] = glGetUniformLocation(_program, "texture");
+    uniforms[UNIFORM_FLASHLIGHT_POSITION] = glGetUniformLocation(_program, "flashlightPosition");
+    uniforms[UNIFORM_DIFFUSE_LIGHT_POSITION] = glGetUniformLocation(_program, "diffuseLightPosition");
+    uniforms[UNIFORM_SHININESS] = glGetUniformLocation(_program, "shininess");
+    uniforms[UNIFORM_AMBIENT_COMPONENT] = glGetUniformLocation(_program, "ambientComponent");
+    uniforms[UNIFORM_DIFFUSE_COMPONENT] = glGetUniformLocation(_program, "diffuseComponent");
+    uniforms[UNIFORM_SPECULAR_COMPONENT] = glGetUniformLocation(_program, "specularComponent");
+    
+    flashlightPosition = cameraPosition;
+    diffuseLightPosition = GLKVector3Make(0.0f, 1.0f, 1.0f);
+    diffuseComponent = GLKVector4Make(0.8, 0.8, 0.8, 1.0);
+    shininess = 200.0;
+    specularComponent = GLKVector4Make(1.0, 1.0, 1.0, 1.0);
+    ambientComponent = GLKVector4Make(0.2, 0.2, 0.2, 1.0);
     
     glEnable(GL_DEPTH_TEST);
     glFrontFace(GL_CCW);
@@ -203,19 +249,20 @@ enum
     GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(65.0f), aspect, 0.1f, 100.0f);
     
     self.effect.transform.projectionMatrix = projectionMatrix;
+    [self cameraUpdate];
+    GLKMatrix4 cameraViewMatrix = GLKMatrix4MakeLookAt(cameraPosition.x, cameraPosition.y, cameraPosition.z,
+                                                       GLKVector3Subtract(cameraPosition, cameraDirection).x,
+                                                       GLKVector3Subtract(cameraPosition, cameraDirection).y,
+                                                       GLKVector3Subtract(cameraPosition, cameraDirection).z,
+                                                       cameraUp.x, cameraUp.y, cameraUp.z);
     
-    GLKMatrix4 baseModelViewMatrix = GLKMatrix4MakeTranslation(0.0f, -0.5f, moving);
-    baseModelViewMatrix = GLKMatrix4Rotate(baseModelViewMatrix, moving2, 0.0f, 1.0f, 0.0f);
     
     for (Renderable *render in renders) {
-        // Compute the model view matrix for the object rendered with ES2
         [render transformSetup];
-        //[render rotateMatrix:GLKVector3Make(0.0f, 1.0f, 0.0f) :_rotation];
-        [render setModelMatrix: GLKMatrix4Multiply(baseModelViewMatrix, [render getModelMatrix])];
         
-        if ([[render getObjectID] isEqual:@"Cube"]) {
-            [render rotateMatrix:GLKVector3Make(1.0f, 1.0f, 1.0f) :_rotation];
-        }
+        [self specialUpdates:render];
+        [render setModelMatrix:GLKMatrix4Multiply(cameraViewMatrix, [render getModelMatrix])];
+        
         [render setNormalMatrix:GLKMatrix3InvertAndTranspose(GLKMatrix4GetMatrix3([render getModelMatrix]), NULL)];
         [render setModelProjection:GLKMatrix4Multiply(projectionMatrix, [render getModelMatrix])];
         
@@ -228,18 +275,41 @@ enum
 {
     glClearColor(0.65f, 0.65f, 0.65f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    
+    /* set lighting parameters... */
+    glUniform3fv(uniforms[UNIFORM_FLASHLIGHT_POSITION], 1, flashlightPosition.v);
+    glUniform3fv(uniforms[UNIFORM_DIFFUSE_LIGHT_POSITION], 1, diffuseLightPosition.v);
+    glUniform4fv(uniforms[UNIFORM_DIFFUSE_COMPONENT], 1, diffuseComponent.v);
+    glUniform1f(uniforms[UNIFORM_SHININESS], shininess);
+    glUniform4fv(uniforms[UNIFORM_SPECULAR_COMPONENT], 1, specularComponent.v);
+    glUniform4fv(uniforms[UNIFORM_AMBIENT_COMPONENT], 1, ambientComponent.v);
+    
+    
     for (Renderable *render in renders) {
         glBindVertexArrayOES(render->_vertexArray);
         glBindTexture(GL_TEXTURE_2D, texture[render->_texture]);
         
         // Render the object again with ES2
         glUseProgram(_program);
-        
         glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, 0, [render getModelProjection].m);
         glUniformMatrix3fv(uniforms[UNIFORM_NORMAL_MATRIX], 1, 0, [render getNormalMatrix].m);
+        glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEW_MATRIX], 1, 0, [render getModelMatrix].m);
         
         glDrawArrays([render getRenderType], 0, [render getNumIndices]);
     }
+}
+
+- (void) specialUpdates :(Renderable*) render{
+    if ([[render getObjectID] isEqual:@"Cube"]) {
+        [render rotateMatrix:GLKVector3Make(1.0f, 1.0f, 1.0f) :_rotation];
+    }
+    
+}
+
+- (void) cameraUpdate {
+    cameraDirection = GLKVector3Make(cosf(cameraVerticalAngle) * sinf(cameraHorizontalAngle), sinf(cameraVerticalAngle), cosf(cameraVerticalAngle) * cosf(cameraHorizontalAngle));
+    cameraHorizontalMovement = GLKVector3Make(sinf(cameraHorizontalAngle - M_PI_2), 0, cosf(cameraHorizontalAngle - M_PI_2));
 }
 
 #pragma mark -  OpenGL ES 2 shader compilation
@@ -399,20 +469,27 @@ enum
 - (IBAction)pinch:(UIPinchGestureRecognizer *)sender {
     float velocity = [sender velocity];
     if (velocity > 0) {
-        moving += 1.0 * self.timeSinceLastUpdate;
+        cameraPosition = GLKVector3Subtract(cameraPosition, GLKVector3MultiplyScalar(cameraDirection, 2.0f * self.timeSinceLastUpdate));
+        cameraPosition.y = 0.5f;
     } else if (velocity < 0){
-        moving -= 1.0 * self.timeSinceLastUpdate;
+        cameraPosition = GLKVector3Subtract(cameraPosition, GLKVector3MultiplyScalar(cameraDirection, 2.0f * -self.timeSinceLastUpdate));
+        cameraPosition.y = 0.5f;
     }
-    NSLog(@"%.1f", moving);
+}
+
+- (IBAction)doubleTap:(UITapGestureRecognizer *)sender {
+    cameraPosition = GLKVector3Make((-width / 2.0f) - 0.5f, 0.5f, (-height / 2.0f) + 0.5f);
+    cameraVerticalAngle = 0.0f; cameraHorizontalAngle = -3.14159f / 2.0;
 }
 
 - (IBAction)pan:(UIPanGestureRecognizer *)sender {
-    CGPoint velocity = [sender velocityInView:self.view];
-    if (velocity.x > 0) {
-        moving2 += 1.0 * self.timeSinceLastUpdate;
-    } else if (velocity.x < 0) {
-        moving2 -= 1.0 * self.timeSinceLastUpdate;
-    }
+    CGPoint point = [sender translationInView:self.view];
+    
+    cameraHorizontalAngle -= (point.x * cameraRotationSpeed);
+    
+    cameraVerticalAngle += (point.y * cameraRotationSpeed);
+    
+    [sender setTranslation:CGPointMake(0, 0) inView:self.view];
 }
 
 - (void) createFloor {

@@ -135,6 +135,21 @@
 			name = Objects;
 			sourceTree = "<group>";
 		};
+		134713171E70DB7700D3A3F7 /* Textures */ = {
+			isa = PBXGroup;
+			children = (
+				134713151E70D60200D3A3F7 /* crate.jpg */,
+				134713121E70CB4F00D3A3F7 /* leftAndRightArrowsTexture.jpg */,
+				1347130E1E70C9B600D3A3F7 /* rightArrowTexture.jpg */,
+				1347130F1E70C9B600D3A3F7 /* leftArrowTexture.jpg */,
+				1347130C1E70AD0700D3A3F7 /* NoPassTexture.jpg */,
+				138EC20F1E6F52F00056CB63 /* wallNSTexture.jpg */,
+				138EC20D1E6F4A640056CB63 /* wallEWTexture.jpg */,
+				138EC2091E6F42E70056CB63 /* floorTexture.jpg */,
+			);
+			name = Textures;
+			sourceTree = "<group>";
+		};
 		EC35B4B81E6BB6130010DE64 = {
 			isa = PBXGroup;
 			children = (
@@ -158,14 +173,6 @@
 		EC35B4C31E6BB6140010DE64 /* Assignment 2 */ = {
 			isa = PBXGroup;
 			children = (
-				134713151E70D60200D3A3F7 /* crate.jpg */,
-				134713121E70CB4F00D3A3F7 /* leftAndRightArrowsTexture.jpg */,
-				1347130E1E70C9B600D3A3F7 /* rightArrowTexture.jpg */,
-				1347130F1E70C9B600D3A3F7 /* leftArrowTexture.jpg */,
-				1347130C1E70AD0700D3A3F7 /* NoPassTexture.jpg */,
-				138EC20F1E6F52F00056CB63 /* wallNSTexture.jpg */,
-				138EC20D1E6F4A640056CB63 /* wallEWTexture.jpg */,
-				138EC2091E6F42E70056CB63 /* floorTexture.jpg */,
 				EC35B4FB1E6BB7FD0010DE64 /* DisjointSet.cpp */,
 				EC35B4FC1E6BB7FD0010DE64 /* DisjointSet.h */,
 				EC35B4FD1E6BB7FD0010DE64 /* maze.cpp */,
@@ -187,6 +194,7 @@
 				EC35B5061E6BBBA10010DE64 /* Renderable.h */,
 				EC56E3851E6D18CA00B6A7D2 /* TextureLoad.m */,
 				EC56E3871E6D18D400B6A7D2 /* TextureLoad.h */,
+				134713171E70DB7700D3A3F7 /* Textures */,
 				134713141E70CF9000D3A3F7 /* Objects */,
 			);
 			path = "Assignment 2";
