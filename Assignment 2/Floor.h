@@ -11,7 +11,7 @@
 
 @interface Floor : Renderable
 
-- (id) init : (GLKVector3) pos : (GLKVector3) rot : (GLKVector3) scale
+- (id) init : (NSString*) name : (GLKVector3) pos : (GLKVector3) rot : (GLKVector3) scale
             : (GLfloat) renderType : (GLfloat) num : (GLfloat*) array
             : (GLfloat) count : (int) textureNum;
 

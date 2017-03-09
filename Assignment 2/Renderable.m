@@ -92,6 +92,10 @@
     return _normArraySize;
 }
 
+- (NSString*) getObjectID {
+    return _ID;
+}
+
 - (void) setArraySize : (GLfloat) size{
     _arraySize = size;
 }
@@ -112,5 +116,8 @@
     _normArraySize = size;
 }
 
+- (void) setObjectID:(NSString *)name {
+    _ID = name;
+}
 
 @end

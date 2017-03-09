@@ -12,7 +12,9 @@
 
 @interface Cube : Renderable
 
-- (id) init : (GLKVector3) pos : (GLKVector3) rot : (GLKVector3) scale : (GLfloat) renderType : (GLfloat) num;
+- (id) init : (NSString*) name : (GLKVector3) pos : (GLKVector3) rot : (GLKVector3) scale
+            : (GLfloat) renderType : (GLfloat) num : (GLfloat*) array
+            : (GLfloat) count : (int) textureNum;
 
 @end
 

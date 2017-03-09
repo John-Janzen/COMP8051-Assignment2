@@ -224,28 +224,28 @@ GLKVector3 cubeVertex[8] =
 
 - (GLfloat) getDirectionText : (int) i : (int) j : (WallDirection) direct {
     switch (direct) {
-            case WALLWEST:
-                if (!maze->GetCell(i, j).northWallPresent && !maze->GetCell(i, j).southWallPresent) {
-                    return 4;
-                } else if (maze->GetCell(i, j).northWallPresent && !maze->GetCell(i, j).southWallPresent) {
-                    return 2;
-                } else if (!maze->GetCell(i, j).northWallPresent && maze->GetCell(i, j).southWallPresent) {
-                    return 1;
-                } else if (maze->GetCell(i, j).northWallPresent && maze->GetCell(i, j).southWallPresent) {
-                    return 3;
-                }
-                break;
-            case WALLEAST:
-                if (!maze->GetCell(i, j).northWallPresent && !maze->GetCell(i, j).southWallPresent) {
-                    return 4;
-                } else if (maze->GetCell(i, j).northWallPresent && !maze->GetCell(i, j).southWallPresent) {
-                    return 1;
-                } else if (!maze->GetCell(i, j).northWallPresent && maze->GetCell(i, j).southWallPresent) {
-                    return 2;
-                } else if (maze->GetCell(i, j).northWallPresent && maze->GetCell(i, j).southWallPresent) {
-                    return 3;
-                }
-            break;
+        case WALLWEST:
+            if (!maze->GetCell(i, j).northWallPresent && !maze->GetCell(i, j).southWallPresent) {
+                return 4;
+            } else if (maze->GetCell(i, j).northWallPresent && !maze->GetCell(i, j).southWallPresent) {
+                return 2;
+            } else if (!maze->GetCell(i, j).northWallPresent && maze->GetCell(i, j).southWallPresent) {
+                return 1;
+            } else if (maze->GetCell(i, j).northWallPresent && maze->GetCell(i, j).southWallPresent) {
+                return 3;
+            }
+        break;
+        case WALLEAST:
+            if (!maze->GetCell(i, j).northWallPresent && !maze->GetCell(i, j).southWallPresent) {
+                return 4;
+            } else if (maze->GetCell(i, j).northWallPresent && !maze->GetCell(i, j).southWallPresent) {
+                return 1;
+            } else if (!maze->GetCell(i, j).northWallPresent && maze->GetCell(i, j).southWallPresent) {
+                return 2;
+            } else if (maze->GetCell(i, j).northWallPresent && maze->GetCell(i, j).southWallPresent) {
+                return 3;
+            }
+        break;
         case WALLNORTH:
             if (!maze->GetCell(i, j).westWallPresent && !maze->GetCell(i, j).eastWallPresent) {
                 return 4;
@@ -256,7 +256,7 @@ GLKVector3 cubeVertex[8] =
             } else if (maze->GetCell(i, j).westWallPresent && maze->GetCell(i, j).eastWallPresent) {
                 return 3;
             }
-            break;
+        break;
         case WALLSOUTH:
             if (!maze->GetCell(i, j).westWallPresent && !maze->GetCell(i, j).eastWallPresent) {
                 return 4;
@@ -267,7 +267,7 @@ GLKVector3 cubeVertex[8] =
             } else if (maze->GetCell(i, j).westWallPresent && maze->GetCell(i, j).eastWallPresent) {
                 return 3;
             }
-            break;
+        break;
     }
     return 1;
 }

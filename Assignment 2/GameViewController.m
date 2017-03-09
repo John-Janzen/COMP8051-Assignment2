@@ -46,7 +46,7 @@ enum
     GLfloat *floorVertices, *WallVertices, *textureArray, *normalVertices;
     float moving, moving2;
     int height, width;
-    GLuint texture[5];
+    GLuint texture[6];
     
 }
 @property (strong, nonatomic) EAGLContext *context;
@@ -96,15 +96,10 @@ enum
     [self CreateEastWalls];
     [self CreateNorthWalls];
     [self CreateSouthWalls];
-    //[renders addObject:[[Floor alloc] init : GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(1.0f, 1.0f, 1.0f)
-                                           //: GL_TRIANGLES: (size / 3) : EWWallVertices : size : textureArray : @"wallEWTexture.jpg" : size2 : normalVertices : size3]];
-    //size = [self createNSWalls];
-    //size2 = [self createNSTexture];
-    //size3 = [self createNSNormals];
-    //[renders addObject:[[Floor alloc] init : GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(1.0f, 1.0f, 1.0f)
-                                           //: GL_TRIANGLES: (size / 3) : NSWallVertices : size : textureArray : @"wallNSTexture.jpg" : size2 : normalVertices : size3]];
     
-    moving = -5.0f;
+    [renders addObject:[[Cube alloc] init:@"Cube" :GLKVector3Make(-2.0f, 0.5f, -2.0f) :GLKVector3Make(0.0f, 0.0f, 0.0f) :GLKVector3Make(0.5f, 0.5f, 0.5f) : GL_TRIANGLES : 36 : NULL : 0 : 5]];
+    
+    moving = 0.0f;
     
     [self setupGL];
 }
@@ -172,14 +167,15 @@ enum
         
         glBindVertexArrayOES(0);
         
-        texture[0] =  [textureLoader loadTexture:@"floorTexture.jpg"];
-        texture[1] =  [textureLoader loadTexture:@"leftArrowTexture.jpg"];
-        texture[2] =  [textureLoader loadTexture:@"rightArrowTexture.jpg"];
-        texture[3] =  [textureLoader loadTexture:@"NoPassTexture.jpg"];
-        texture[4] =  [textureLoader loadTexture:@"leftAndRightArrowsTexture.jpg"];
-        glActiveTexture(GL_TEXTURE0);
-        glUniform1i(uniforms[UNIFORM_TEXTURE], 0);
     }
+    texture[0] = [textureLoader loadTexture:@"floorTexture.jpg"];
+    texture[1] = [textureLoader loadTexture:@"leftArrowTexture.jpg"];
+    texture[2] = [textureLoader loadTexture:@"rightArrowTexture.jpg"];
+    texture[3] = [textureLoader loadTexture:@"NoPassTexture.jpg"];
+    texture[4] = [textureLoader loadTexture:@"leftAndRightArrowsTexture.jpg"];
+    texture[5] = [textureLoader loadTexture:@"crate.jpg"];
+    glActiveTexture(GL_TEXTURE0);
+    glUniform1i(uniforms[UNIFORM_TEXTURE], 0);
 }
 
 - (void)tearDownGL
@@ -208,7 +204,7 @@ enum
     
     self.effect.transform.projectionMatrix = projectionMatrix;
     
-    GLKMatrix4 baseModelViewMatrix = GLKMatrix4MakeTranslation(0.0f, -2.0f, moving);
+    GLKMatrix4 baseModelViewMatrix = GLKMatrix4MakeTranslation(0.0f, -0.5f, moving);
     baseModelViewMatrix = GLKMatrix4Rotate(baseModelViewMatrix, moving2, 0.0f, 1.0f, 0.0f);
     
     for (Renderable *render in renders) {
@@ -217,6 +213,9 @@ enum
         //[render rotateMatrix:GLKVector3Make(0.0f, 1.0f, 0.0f) :_rotation];
         [render setModelMatrix: GLKMatrix4Multiply(baseModelViewMatrix, [render getModelMatrix])];
         
+        if ([[render getObjectID] isEqual:@"Cube"]) {
+            [render rotateMatrix:GLKVector3Make(1.0f, 1.0f, 1.0f) :_rotation];
+        }
         [render setNormalMatrix:GLKMatrix3InvertAndTranspose(GLKMatrix4GetMatrix3([render getModelMatrix]), NULL)];
         [render setModelProjection:GLKMatrix4Multiply(projectionMatrix, [render getModelMatrix])];
         
@@ -429,7 +428,7 @@ enum
         WallVertices[i] = [combine[i] floatValue];
     }
     floorVertices = (GLfloat*)malloc([floor count] * sizeof(GLfloat));
-    [renders addObject:[[Floor alloc] init : GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(1.0f, 1.0f, 1.0f)
+    [renders addObject:[[Floor alloc] init : @"Floor" :GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(1.0f, 1.0f, 1.0f)
                                            : GL_TRIANGLES: combine.count / 8 : WallVertices : combine.count : 0]];
 }
 
@@ -450,7 +449,7 @@ enum
             for (int i = 0; i < [combine count]; i++) {
                 WallVertices[i] = [combine[i] floatValue];
             }
-            [renders addObject:[[Wall alloc] init: GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(1.0f, 1.0f, 1.0f)
+            [renders addObject:[[Wall alloc] init: @"WestWalls" :GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(1.0f, 1.0f, 1.0f)
                                                  : GL_TRIANGLES : (combine.count / 8) : WallVertices : combine.count : [maze getDirectionText : i : j : WALLEAST]]];
         }
     }
@@ -473,7 +472,7 @@ enum
             for (int i = 0; i < [combine count]; i++) {
                 WallVertices[i] = [combine[i] floatValue];
             }
-            [renders addObject:[[Wall alloc] init: GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(1.0f, 1.0f, 1.0f)
+            [renders addObject:[[Wall alloc] init: @"EastWalls" :GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(1.0f, 1.0f, 1.0f)
                                                  : GL_TRIANGLES : (combine.count / 3) : WallVertices : combine.count : [maze getDirectionText : i : j : WALLEAST]]];
         }
     }
@@ -496,7 +495,7 @@ enum
             for (int i = 0; i < [combine count]; i++) {
                 WallVertices[i] = [combine[i] floatValue];
             }
-            [renders addObject:[[Wall alloc] init: GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(1.0f, 1.0f, 1.0f)
+            [renders addObject:[[Wall alloc] init: @"NorthWalls" :GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(1.0f, 1.0f, 1.0f)
                                                  : GL_TRIANGLES : (combine.count / 3) : WallVertices : combine.count : [maze getDirectionText : i : j : WALLNORTH]]];
         }
     }
@@ -519,7 +518,7 @@ enum
             for (int i = 0; i < [combine count]; i++) {
                 WallVertices[i] = [combine[i] floatValue];
             }
-            [renders addObject:[[Wall alloc] init: GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(1.0f, 1.0f, 1.0f)
+            [renders addObject:[[Wall alloc] init: @"SouthWalls" :GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(0.0f, 0.0f, 0.0f) : GLKVector3Make(1.0f, 1.0f, 1.0f)
                                                  : GL_TRIANGLES : (combine.count / 3) : WallVertices : combine.count : [maze getDirectionText : i : j : WALLSOUTH]]];
         }
     }
@@ -536,42 +535,5 @@ enum
     }
     return combined;
 }
-
-//- (float) createNSNormals {
-//    NSMutableArray *norm = [maze CreateNSNormalVertices];
-//    normalVertices = (GLfloat*)malloc([norm count] * sizeof(GLfloat));
-//    for (int i = 0; i < [norm count]; i++) {
-//        normalVertices[i] = [norm[i] floatValue];
-//    }
-//    return norm.count;
-//}
-
-//- (float) createFloorTexture {
-//    
-//    return text.count;
-//}
-
-//- (float) createEWTexture {
-//    NSMutableArray *text = [maze CreateEWTextureVertices];
-//    textureArray = (GLfloat*)malloc([text count] * sizeof(GLfloat));
-//    for (int i = 0; i < [text count]; i++) {
-//        textureArray[i] = [text[i] floatValue];
-//    }
-//    return text.count;
-//}
-
-//- (float) createNSTexture {
-//    NSMutableArray *text = [maze CreateNSTextureVertices];
-//    textureArray = (GLfloat*)malloc([text count] * sizeof(GLfloat));
-//    for (int i = 0; i < [text count]; i++) {
-//        textureArray[i] = [text[i] floatValue];
-//    }
-//    return text.count;
-//}
-
-//- (float) createFloorNormals {
-//    
-//    return norm.count;
-//}
 
 @end

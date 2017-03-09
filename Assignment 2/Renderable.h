@@ -22,6 +22,7 @@
     GLKMatrix4 _modelMatrix, _modelViewProjection;
     GLKMatrix3 _normalMatrix;
     GLfloat _arraySize, _renderType, _numOfIndices, _txtArraySize, _normArraySize;
+    NSString *_ID;
     
 }
 
@@ -48,12 +49,14 @@
 - (GLfloat) getNumIndices;
 - (GLfloat) getTxtArraySize;
 - (GLfloat) getNormArraySize;
+- (NSString*) getObjectID;
 
 - (void) setArraySize : (GLfloat) size;
 - (void) setRenderType : (GLfloat) render;
 - (void) setNumIndices : (GLfloat) ind;
 - (void) setTxtArraySize : (GLfloat) size;
 - (void) setNormArraySize : (GLfloat) size;
+- (void) setObjectID : (NSString*) name;
 
 
 @end
