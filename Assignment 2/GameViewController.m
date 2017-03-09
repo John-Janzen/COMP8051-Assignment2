@@ -97,7 +97,7 @@ enum
     [self CreateNorthWalls];
     [self CreateSouthWalls];
     
-    [renders addObject:[[Cube alloc] init:@"Cube" :GLKVector3Make(-2.0f, 0.5f, -2.0f) :GLKVector3Make(0.0f, 0.0f, 0.0f) :GLKVector3Make(0.5f, 0.5f, 0.5f) : GL_TRIANGLES : 36 : NULL : 0 : 5]];
+    [renders addObject:[[Cube alloc] init:@"Cube" :GLKVector3Make(-1.5f, 0.5f, -1.5f) :GLKVector3Make(0.0f, 0.0f, 0.0f) :GLKVector3Make(0.25f, 0.25f, 0.25f) : GL_TRIANGLES : 36 : NULL : 0 : 5]];
     
     moving = 0.0f;
     

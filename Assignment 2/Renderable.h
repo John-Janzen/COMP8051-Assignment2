@@ -29,6 +29,8 @@
 - (void) transformSetup;
 - (void) makeTranslationSetUp; // sets up the translation matrix at the beginning
 - (void) rotateMatrixSetup; // sets up rotation vector
+- (void) scaleMatrixSetup;
+- (void) removeScaleFactor;
 
 - (void) setNormalMatrix:(GLKMatrix3) matrix;
 - (void) setModelMatrix:(GLKMatrix4) matrix; // set the model matrix whenever needed
