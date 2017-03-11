@@ -24,6 +24,7 @@ enum
     UNIFORM_MODELVIEW_MATRIX,
     UNIFORM_TEXTURE,
     UNIFORM_FLASHLIGHT_POSITION,
+    UNIFORM_FOG_COLOR,
     UNIFORM_DIFFUSE_LIGHT_POSITION,
     UNIFORM_SHININESS,
     UNIFORM_AMBIENT_COMPONENT,
@@ -46,6 +47,7 @@ enum
     GLuint _program;
     
     GLKVector3 flashlightPosition;
+    GLKVector4 fogColor;
     GLKVector3 diffuseLightPosition;
     GLKVector4 diffuseComponent;
     float shininess;
@@ -61,6 +63,8 @@ enum
     int height, width;
     GLuint texture[6];
     
+    BOOL dayNight, fogEffect;
+    
     float cameraRotationSpeed;
     
     float cameraVerticalAngle;
@@ -71,6 +75,7 @@ enum
     GLKVector3 cameraPosition;
     GLKVector3 cameraDirection;
     GLKVector3 cameraUp;
+    GLKMatrix4 diffuseDirection;
     
 }
 @property (strong, nonatomic) EAGLContext *context;
@@ -116,7 +121,7 @@ enum
     cameraRotationSpeed = 0.002;
     cameraPosition = GLKVector3Make((-width / 2.0f) - 0.5f, 0.5f, (-height / 2.0f) + 0.5f);
     cameraUp = GLKVector3Make(0, 1, 0);
-    cameraVerticalAngle = 0.0f; cameraHorizontalAngle = -3.14159f / 2.0;
+    cameraVerticalAngle = 0.0f; cameraHorizontalAngle = -M_PI_2;
     [maze Create:width :height];
     [self createFloor];
     
@@ -177,18 +182,19 @@ enum
     /* more needed here... */
     uniforms[UNIFORM_TEXTURE] = glGetUniformLocation(_program, "texture");
     uniforms[UNIFORM_FLASHLIGHT_POSITION] = glGetUniformLocation(_program, "flashlightPosition");
+    uniforms[UNIFORM_FOG_COLOR] = glGetUniformLocation(_program, "fogColor");
     uniforms[UNIFORM_DIFFUSE_LIGHT_POSITION] = glGetUniformLocation(_program, "diffuseLightPosition");
     uniforms[UNIFORM_SHININESS] = glGetUniformLocation(_program, "shininess");
     uniforms[UNIFORM_AMBIENT_COMPONENT] = glGetUniformLocation(_program, "ambientComponent");
     uniforms[UNIFORM_DIFFUSE_COMPONENT] = glGetUniformLocation(_program, "diffuseComponent");
     uniforms[UNIFORM_SPECULAR_COMPONENT] = glGetUniformLocation(_program, "specularComponent");
     
-    flashlightPosition = cameraPosition;
-    diffuseLightPosition = GLKVector3Make(0.0f, 1.0f, 1.0f);
-    diffuseComponent = GLKVector4Make(0.8, 0.8, 0.8, 1.0);
+    ambientComponent = GLKVector4Make(0.2, 0.2, 0.2, 1.0);
+    diffuseComponent = GLKVector4Make(0.3, 0.3, 0.3, 1.0);
     shininess = 200.0;
     specularComponent = GLKVector4Make(1.0, 1.0, 1.0, 1.0);
-    ambientComponent = GLKVector4Make(0.2, 0.2, 0.2, 1.0);
+    fogColor = GLKVector4Make(0.0f, 0.0f, 0.0f, 0.0);
+    
     
     glEnable(GL_DEPTH_TEST);
     glFrontFace(GL_CCW);
@@ -205,11 +211,11 @@ enum
         glBindBuffer(GL_ARRAY_BUFFER, render->_vertexBuffer[0]);
         glBufferData(GL_ARRAY_BUFFER, [render getArraySize], render->_arrayVertices, GL_STATIC_DRAW);
         glEnableVertexAttribArray(GLKVertexAttribPosition);
-        glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, 32, BUFFER_OFFSET(0));
+        glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), BUFFER_OFFSET(0));
         glEnableVertexAttribArray(GLKVertexAttribNormal);
-        glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, 32, BUFFER_OFFSET(12));
+        glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE,  8 * sizeof(GLfloat), BUFFER_OFFSET(12));
         glEnableVertexAttribArray(GLKVertexAttribTexCoord0);
-        glVertexAttribPointer(GLKVertexAttribTexCoord0, 2, GL_FLOAT, GL_FALSE, 32, BUFFER_OFFSET(24));
+        glVertexAttribPointer(GLKVertexAttribTexCoord0, 2, GL_FLOAT, GL_FALSE,  8 * sizeof(GLfloat), BUFFER_OFFSET(24));
         
         glBindVertexArrayOES(0);
         
@@ -247,7 +253,8 @@ enum
 {
     float aspect = fabs(self.view.bounds.size.width / self.view.bounds.size.height);
     GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(65.0f), aspect, 0.1f, 100.0f);
-    
+    diffuseLightPosition = GLKVector3Make(0.0f, 1.0f, 1.0f);
+    flashlightPosition = GLKVector3Make(0.0f, 0.0f, 0.0f);
     self.effect.transform.projectionMatrix = projectionMatrix;
     [self cameraUpdate];
     GLKMatrix4 cameraViewMatrix = GLKMatrix4MakeLookAt(cameraPosition.x, cameraPosition.y, cameraPosition.z,
@@ -255,8 +262,7 @@ enum
                                                        GLKVector3Subtract(cameraPosition, cameraDirection).y,
                                                        GLKVector3Subtract(cameraPosition, cameraDirection).z,
                                                        cameraUp.x, cameraUp.y, cameraUp.z);
-    
-    
+    diffuseLightPosition = GLKMatrix4MultiplyVector3(cameraViewMatrix, diffuseLightPosition);
     for (Renderable *render in renders) {
         [render transformSetup];
         
@@ -284,6 +290,7 @@ enum
     glUniform1f(uniforms[UNIFORM_SHININESS], shininess);
     glUniform4fv(uniforms[UNIFORM_SPECULAR_COMPONENT], 1, specularComponent.v);
     glUniform4fv(uniforms[UNIFORM_AMBIENT_COMPONENT], 1, ambientComponent.v);
+    glUniform4fv(uniforms[UNIFORM_FOG_COLOR], 1, fogColor.v);
     
     
     for (Renderable *render in renders) {
@@ -491,6 +498,30 @@ enum
     
     [sender setTranslation:CGPointMake(0, 0) inView:self.view];
 }
+
+- (IBAction)day2Night:(UIButton *)sender {
+    if (dayNight) {
+        ambientComponent = GLKVector4Make(0.2, 0.2, 0.2, 1.0);
+        diffuseComponent = GLKVector4Make(0.3, 0.3, 0.3, 1.0);
+        
+    } else {
+        ambientComponent = GLKVector4Make(0.05, 0.05, 0.05, 1.0);
+        diffuseComponent = GLKVector4Make(0.05, 0.05, 0.05, 1.0);
+    }
+    dayNight = !dayNight;
+}
+
+- (IBAction)fogButton:(UIButton *)sender {
+    if (fogEffect) {
+        fogColor = GLKVector4Make(0.0f, 0.0f, 0.0f, 1.0f);
+        
+    } else {
+        fogColor = GLKVector4Make(1.0f, 1.0f, 1.0f, 0.0f);
+    }
+    fogEffect = !fogEffect;
+    
+}
+
 
 - (void) createFloor {
     NSMutableArray *floor = [maze CreateFloorVertices];
