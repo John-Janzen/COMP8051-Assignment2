@@ -43,6 +43,7 @@ typedef enum : NSUInteger {
 - (void) addNormals : (GLKVector3) normal;
 
 - (GLfloat) getDirectionText : (int) i : (int) j : (WallDirection) direct;
+- (void) createMiniMap : (UIView*) view;
 
 @end
 

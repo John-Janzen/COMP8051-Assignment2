@@ -42,6 +42,7 @@
 
 - (void) translateMatrix:(GLKVector3) translate; // translates the model
 - (void) rotateMatrix:(GLKVector3)rotateMat : (float)degree; // rotates model by radians on axis
+- (void) scaleMatrix : (GLKVector3) scale;
 
 - (void) newRotate:(GLKVector3)rot; // creates new rotation matrix
 - (void) resetPosRot; // resets position + rotation to 0,0,0

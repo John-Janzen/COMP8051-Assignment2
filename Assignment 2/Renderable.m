@@ -37,6 +37,10 @@
     _modelMatrix = GLKMatrix4ScaleWithVector3(_modelMatrix, _scaleVector);
 }
 
+- (void) scaleMatrix : (GLKVector3) scale {
+    _modelMatrix = GLKMatrix4ScaleWithVector3(_modelMatrix, scale);
+}
+
 - (void) rotateMatrix:(GLKVector3)rotateMat : (float) degree {
     [self removeScaleFactor];
     //_modelMatrix = GLKMatrix4TranslateWithVector3(_modelMatrix, GLKVector3Negate(_positionVector));

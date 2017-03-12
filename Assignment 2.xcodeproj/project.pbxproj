@@ -32,6 +32,7 @@
 		EC35B5041E6BBB850010DE64 /* Renderable.m in Sources */ = {isa = PBXBuildFile; fileRef = EC35B5031E6BBB850010DE64 /* Renderable.m */; };
 		EC35B5081E6BBD480010DE64 /* Cube.m in Sources */ = {isa = PBXBuildFile; fileRef = EC35B5071E6BBD480010DE64 /* Cube.m */; };
 		EC35B50D1E6BEFB90010DE64 /* Floor.m in Sources */ = {isa = PBXBuildFile; fileRef = EC35B50C1E6BEFB90010DE64 /* Floor.m */; };
+		EC37784D1E73C7410054AE77 /* playerPointer.png in Resources */ = {isa = PBXBuildFile; fileRef = EC37784C1E73C7410054AE77 /* playerPointer.png */; };
 		EC56E3861E6D18CA00B6A7D2 /* TextureLoad.m in Sources */ = {isa = PBXBuildFile; fileRef = EC56E3851E6D18CA00B6A7D2 /* TextureLoad.m */; };
 /* End PBXBuildFile section */
 
@@ -93,6 +94,7 @@
 		EC35B50B1E6BC9F90010DE64 /* MazeController.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = MazeController.h; sourceTree = "<group>"; };
 		EC35B50C1E6BEFB90010DE64 /* Floor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Floor.m; sourceTree = "<group>"; };
 		EC35B50E1E6BEFD40010DE64 /* Floor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Floor.h; sourceTree = "<group>"; };
+		EC37784C1E73C7410054AE77 /* playerPointer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = playerPointer.png; sourceTree = "<group>"; };
 		EC56E3851E6D18CA00B6A7D2 /* TextureLoad.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextureLoad.m; sourceTree = "<group>"; };
 		EC56E3871E6D18D400B6A7D2 /* TextureLoad.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TextureLoad.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -138,6 +140,7 @@
 		134713171E70DB7700D3A3F7 /* Textures */ = {
 			isa = PBXGroup;
 			children = (
+				EC37784C1E73C7410054AE77 /* playerPointer.png */,
 				134713151E70D60200D3A3F7 /* crate.jpg */,
 				134713121E70CB4F00D3A3F7 /* leftAndRightArrowsTexture.jpg */,
 				1347130E1E70C9B600D3A3F7 /* rightArrowTexture.jpg */,
@@ -347,6 +350,7 @@
 				134713161E70D60200D3A3F7 /* crate.jpg in Resources */,
 				138EC20E1E6F4A640056CB63 /* wallEWTexture.jpg in Resources */,
 				EC35B4CB1E6BB6140010DE64 /* Shader.fsh in Resources */,
+				EC37784D1E73C7410054AE77 /* playerPointer.png in Resources */,
 				134713111E70C9B600D3A3F7 /* leftArrowTexture.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

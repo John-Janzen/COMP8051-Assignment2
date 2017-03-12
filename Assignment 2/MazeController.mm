@@ -272,4 +272,41 @@ GLKVector3 cubeVertex[8] =
     return 1;
 }
 
+- (void) createMiniMap : (UIView*) view{
+    UILabel *label;
+    for (int i = 0; i < width; i++) {
+        for (int j = 0; j < height; j++) {
+            
+            if (maze->GetCell(i, j).westWallPresent) {
+                label = [[UILabel alloc] initWithFrame:CGRectMake(i * 20, j * 20, 20, 10)];
+                label.backgroundColor = [UIColor blueColor];
+                label.textAlignment = NSTextAlignmentCenter;
+                label.numberOfLines = 0;
+                [view addSubview:label];
+            }
+            if (maze->GetCell(i, j).eastWallPresent) {
+                label = [[UILabel alloc] initWithFrame:CGRectMake(i * 20, j * 20 + 20, 30, 10)];
+                label.backgroundColor = [UIColor blueColor];
+                label.textAlignment = NSTextAlignmentCenter;
+                label.numberOfLines = 0;
+                [view addSubview:label];
+            }
+            if (maze->GetCell(i, j).northWallPresent) {
+                label = [[UILabel alloc] initWithFrame:CGRectMake(i * 20, j * 20, 10, 20)];
+                label.backgroundColor = [UIColor blueColor];
+                label.textAlignment = NSTextAlignmentCenter;
+                label.numberOfLines = 0;
+                [view addSubview:label];
+            }
+            if (maze->GetCell(i, j).southWallPresent) {
+                label = [[UILabel alloc] initWithFrame:CGRectMake(i * 20 + 20, j * 20, 10, 30)];
+                label.backgroundColor = [UIColor blueColor];
+                label.textAlignment = NSTextAlignmentCenter;
+                label.numberOfLines = 0;
+                [view addSubview:label];
+            }
+        }
+    }
+}
+
 @end
