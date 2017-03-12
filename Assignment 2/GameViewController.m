@@ -24,8 +24,8 @@ enum
     UNIFORM_MODELVIEW_MATRIX,
     UNIFORM_TEXTURE,
     UNIFORM_FLASHLIGHT_POSITION,
+    UNIFORM_FLASHLIGHT_DIRECTION,
     UNIFORM_FOG_COLOR,
-    UNIFORM_DIFFUSE_LIGHT_POSITION,
     UNIFORM_SHININESS,
     UNIFORM_AMBIENT_COMPONENT,
     UNIFORM_DIFFUSE_COMPONENT,
@@ -46,9 +46,9 @@ enum
 @interface GameViewController () {
     GLuint _program;
     
-    GLKVector3 flashlightPosition;
+    GLKVector4 flashlightPosition;
+    GLKVector3 flashlightDirection;
     GLKVector4 fogColor;
-    GLKVector3 diffuseLightPosition;
     GLKVector4 diffuseComponent;
     float shininess;
     GLKVector4 specularComponent;
@@ -191,8 +191,8 @@ enum
     uniforms[UNIFORM_MODELVIEW_MATRIX] = glGetUniformLocation(_program, "modelViewMatrix");
     uniforms[UNIFORM_TEXTURE] = glGetUniformLocation(_program, "texture");
     uniforms[UNIFORM_FLASHLIGHT_POSITION] = glGetUniformLocation(_program, "flashlightPosition");
+    uniforms[UNIFORM_FLASHLIGHT_DIRECTION] = glGetUniformLocation(_program, "flashlightDirection");
     uniforms[UNIFORM_FOG_COLOR] = glGetUniformLocation(_program, "fogColor");
-    uniforms[UNIFORM_DIFFUSE_LIGHT_POSITION] = glGetUniformLocation(_program, "diffuseLightPosition");
     uniforms[UNIFORM_SHININESS] = glGetUniformLocation(_program, "shininess");
     uniforms[UNIFORM_AMBIENT_COMPONENT] = glGetUniformLocation(_program, "ambientComponent");
     uniforms[UNIFORM_DIFFUSE_COMPONENT] = glGetUniformLocation(_program, "diffuseComponent");
@@ -200,7 +200,7 @@ enum
     
     ambientComponent = GLKVector4Make(0.2, 0.2, 0.2, 1.0);
     diffuseComponent = GLKVector4Make(0.3, 0.3, 0.3, 1.0);
-    shininess = 200.0;
+    shininess = 100.0;
     specularComponent = GLKVector4Make(1.0, 1.0, 1.0, 1.0);
     fogColor = GLKVector4Make(0.0f, 0.0f, 0.0f, 0.0);
     
@@ -260,16 +260,15 @@ enum
 {
     float aspect = fabs(self.view.bounds.size.width / self.view.bounds.size.height);
     GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(65.0f), aspect, 0.1f, 100.0f);
-    diffuseLightPosition = GLKVector3Make(0.0f, 1.0f, 1.0f);
-    flashlightPosition = GLKVector3Make(0.0f, 0.0f, 0.0f);
     self.effect.transform.projectionMatrix = projectionMatrix;
     [self cameraUpdate];
+    flashlightPosition = GLKVector4Make(cameraPosition.x, cameraPosition.y, cameraPosition.z, 1.0f);
+    flashlightDirection = GLKVector3Make(cameraDirection.x, cameraDirection.y, cameraDirection.z);
     GLKMatrix4 cameraViewMatrix = GLKMatrix4MakeLookAt(cameraPosition.x, cameraPosition.y, cameraPosition.z,
                                                        GLKVector3Subtract(cameraPosition, cameraDirection).x,
                                                        GLKVector3Subtract(cameraPosition, cameraDirection).y,
                                                        GLKVector3Subtract(cameraPosition, cameraDirection).z,
                                                        cameraUp.x, cameraUp.y, cameraUp.z);
-    diffuseLightPosition = GLKMatrix4MultiplyVector3(cameraViewMatrix, diffuseLightPosition);
     
     for (Renderable *render in renders) {
         [render transformSetup];
@@ -292,8 +291,8 @@ enum
 
     
     /* set lighting parameters... */
-    glUniform3fv(uniforms[UNIFORM_FLASHLIGHT_POSITION], 1, flashlightPosition.v);
-    glUniform3fv(uniforms[UNIFORM_DIFFUSE_LIGHT_POSITION], 1, diffuseLightPosition.v);
+    glUniform4fv(uniforms[UNIFORM_FLASHLIGHT_POSITION], 1, flashlightPosition.v);
+    glUniform3fv(uniforms[UNIFORM_FLASHLIGHT_DIRECTION], 1, flashlightDirection.v);
     glUniform4fv(uniforms[UNIFORM_DIFFUSE_COMPONENT], 1, diffuseComponent.v);
     glUniform1f(uniforms[UNIFORM_SHININESS], shininess);
     glUniform4fv(uniforms[UNIFORM_SPECULAR_COMPONENT], 1, specularComponent.v);
