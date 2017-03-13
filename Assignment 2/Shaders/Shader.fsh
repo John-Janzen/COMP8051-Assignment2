@@ -44,7 +44,7 @@ void main()
     float Ks = pow(max(dot(N, H), 0.0), shininess);
     
     float lightDist = length(L);
-    float attenuation = 1.0 / (3.0 + 0.007 * lightDist +  0.000008 * lightDist * lightDist);
+    float attenuation = 1.0 / (2.0 + 0.007 * lightDist +  0.000008 * lightDist * lightDist);
     
     angle = dot(normalize(spotDirection), -normalize(eyePos.xyz - lightPosition));
     angle = max(angle, 0.0);

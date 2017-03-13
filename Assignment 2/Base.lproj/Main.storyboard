@@ -39,6 +39,15 @@
                                     <action selector="fogButton:" destination="BV1-FR-VrT" eventType="touchUpInside" id="STC-Kb-SCp"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6ci-9i-jZf">
+                                <rect key="frame" x="149" y="47" width="67" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="1" green="0.98995600719999999" blue="0.96510069759999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <state key="normal" title="Flashlight"/>
+                                <connections>
+                                    <action selector="flashlightButton:" destination="BV1-FR-VrT" eventType="touchUpInside" id="oOB-HU-AAc"/>
+                                </connections>
+                            </button>
                             <view hidden="YES" alpha="0.5" tag="4" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Mvj-zU-i0x">
                                 <rect key="frame" x="60" y="348" width="200" height="200"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
