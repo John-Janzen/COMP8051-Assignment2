@@ -13,6 +13,7 @@
 #include "Floor.h"
 #include "TextureLoad.h"
 #include "Wall.h"
+#include "BoundingBox.h"
 
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
@@ -142,7 +143,7 @@ enum
                                          : GLKVector3Make( (-width / 2) + 0.5f, 0.5f, (-height / 2) + 0.5f)
                                          : GLKVector3Make(0.0f, 0.0f, 0.0f)
                                          : GLKVector3Make(0.25f, 0.25f, 0.25f)
-                                         : GL_TRIANGLES : 36 : NULL : 0 : 5]];
+                                         : GL_TRIANGLES : 36 : NULL : 0 : 5 : false]];
     
     moving = 0.0f;
     [maze createMiniMap: map];
@@ -565,7 +566,7 @@ enum
                                            : GLKVector3Make(0.0f, 0.0f, 0.0f)
                                            : GLKVector3Make(1.0f, 1.0f, 1.0f)
                                            : GL_TRIANGLES: combine.count / numOfVertices : WallVertices
-                                           : combine.count : 0]];
+                                           : combine.count : 0 : false]];
 }
 
 - (void) CreateWestWalls {
@@ -589,7 +590,7 @@ enum
                                                  : GLKVector3Make(0.0f, 0.0f, 0.0f)
                                                  : GLKVector3Make(1.0f, 1.0f, 1.0f)
                                                  : GL_TRIANGLES : (combine.count / numOfVertices) : WallVertices
-                                                 : combine.count : [maze getDirectionText : i : j : WALLEAST]]];
+                                                 : combine.count : [maze getDirectionText : i : j : WALLWEST] : true]];
         }
     }
 }
@@ -615,7 +616,7 @@ enum
                                                  : GLKVector3Make(0.0f, 0.0f, 0.0f)
                                                  : GLKVector3Make(1.0f, 1.0f, 1.0f)
                                                  : GL_TRIANGLES : (combine.count / numOfVertices) : WallVertices
-                                                 : combine.count : [maze getDirectionText : i : j : WALLEAST]]];
+                                                 : combine.count : [maze getDirectionText : i : j : WALLEAST] : true]];
         }
     }
 }
@@ -641,7 +642,7 @@ enum
                                                  : GLKVector3Make(0.0f, 0.0f, 0.0f)
                                                  : GLKVector3Make(1.0f, 1.0f, 1.0f)
                                                  : GL_TRIANGLES : (combine.count / numOfVertices) : WallVertices
-                                                 : combine.count : [maze getDirectionText : i : j : WALLNORTH]]];
+                                                 : combine.count : [maze getDirectionText : i : j : WALLNORTH] : true]];
         }
     }
 }
@@ -667,7 +668,7 @@ enum
                                                  : GLKVector3Make(0.0f, 0.0f, 0.0f)
                                                  : GLKVector3Make(1.0f, 1.0f, 1.0f)
                                                  : GL_TRIANGLES : (combine.count / numOfVertices) : WallVertices
-                                                 : combine.count : [maze getDirectionText : i : j : WALLSOUTH]]];
+                                                 : combine.count : [maze getDirectionText : i : j : WALLSOUTH] : true]];
         }
     }
 }

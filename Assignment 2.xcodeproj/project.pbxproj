@@ -16,6 +16,7 @@
 		138EC20A1E6F42E70056CB63 /* floorTexture.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 138EC2091E6F42E70056CB63 /* floorTexture.jpg */; };
 		138EC20E1E6F4A640056CB63 /* wallEWTexture.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 138EC20D1E6F4A640056CB63 /* wallEWTexture.jpg */; };
 		138EC2101E6F52F00056CB63 /* wallNSTexture.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 138EC20F1E6F52F00056CB63 /* wallNSTexture.jpg */; };
+		13CD70DC1E79BCC2009DA08C /* BoundingBox.m in Sources */ = {isa = PBXBuildFile; fileRef = 13CD70DB1E79BCC2009DA08C /* BoundingBox.m */; };
 		EC35B4C61E6BB6140010DE64 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = EC35B4C51E6BB6140010DE64 /* main.m */; };
 		EC35B4C91E6BB6140010DE64 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EC35B4C81E6BB6140010DE64 /* AppDelegate.m */; };
 		EC35B4CB1E6BB6140010DE64 /* Shader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = EC35B4CA1E6BB6140010DE64 /* Shader.fsh */; };
@@ -64,6 +65,8 @@
 		138EC2091E6F42E70056CB63 /* floorTexture.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = floorTexture.jpg; sourceTree = "<group>"; };
 		138EC20D1E6F4A640056CB63 /* wallEWTexture.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = wallEWTexture.jpg; sourceTree = "<group>"; };
 		138EC20F1E6F52F00056CB63 /* wallNSTexture.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = wallNSTexture.jpg; sourceTree = "<group>"; };
+		13CD70DB1E79BCC2009DA08C /* BoundingBox.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BoundingBox.m; sourceTree = "<group>"; };
+		13CD70DD1E79BCCF009DA08C /* BoundingBox.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BoundingBox.h; sourceTree = "<group>"; };
 		EC35B4C11E6BB6140010DE64 /* Assignment 2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Assignment 2.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC35B4C51E6BB6140010DE64 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		EC35B4C71E6BB6140010DE64 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -199,6 +202,8 @@
 				EC56E3871E6D18D400B6A7D2 /* TextureLoad.h */,
 				134713171E70DB7700D3A3F7 /* Textures */,
 				134713141E70CF9000D3A3F7 /* Objects */,
+				13CD70DB1E79BCC2009DA08C /* BoundingBox.m */,
+				13CD70DD1E79BCCF009DA08C /* BoundingBox.h */,
 			);
 			path = "Assignment 2";
 			sourceTree = "<group>";
@@ -379,6 +384,7 @@
 				EC35B5081E6BBD480010DE64 /* Cube.m in Sources */,
 				EC35B4FF1E6BB7FD0010DE64 /* DisjointSet.cpp in Sources */,
 				EC35B4C91E6BB6140010DE64 /* AppDelegate.m in Sources */,
+				13CD70DC1E79BCC2009DA08C /* BoundingBox.m in Sources */,
 				1347130A1E709F6700D3A3F7 /* Wall.m in Sources */,
 				EC35B50D1E6BEFB90010DE64 /* Floor.m in Sources */,
 				EC35B5021E6BB8DF0010DE64 /* MazeController.mm in Sources */,

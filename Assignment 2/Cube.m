@@ -18,7 +18,7 @@ GLfloat gCubeVertexData[] =
     0.5f, -0.5f, 0.5f, 1.0f,        1.0f, 0.0f, 0.0f, 1.0f,   0.0f, 1.0f,
     0.5f, -0.5f, 0.5f, 1.0f,        1.0f, 0.0f, 0.0f, 1.0f,   0.0f, 1.0f,
     0.5f, 0.5f, -0.5f, 1.0f,        1.0f, 0.0f, 0.0f, 1.0f,   1.0f, 0.0f,
-    0.5f, 0.5f, 0.5f, 1.0f,         1.0f, 0.0f, 0.0f,  1.0f,  1.0f, 1.0f,
+    0.5f, 0.5f, 0.5f, 1.0f,         1.0f, 0.0f, 0.0f, 1.0f,   1.0f, 1.0f,
     
     0.5f, 0.5f, -0.5f, 1.0f,        0.0f, 1.0f, 0.0f, 1.0f,   1.0f, 0.0f,
     -0.5f, 0.5f, -0.5f, 1.0f,       0.0f, 1.0f, 0.0f, 1.0f,   0.0f, 0.0f,
@@ -59,7 +59,7 @@ GLfloat gCubeVertexData[] =
 @implementation Cube
 
 - (id) init: (NSString*) name :(GLKVector3)pos :(GLKVector3)rot :(GLKVector3)scale
-           :(GLfloat)renderType :(GLfloat)num :(GLfloat *)array :(GLfloat) count : (int) textureNum {
+           :(GLfloat)renderType :(GLfloat)num :(GLfloat *)array :(GLfloat) count : (int) textureNum : (BOOL) bound {
     self = [super init];
     if (self) {
         [super setObjectID:name];
@@ -71,6 +71,11 @@ GLfloat gCubeVertexData[] =
         [super setRenderType: renderType];
         [super setArraySize: sizeof(gCubeVertexData)];
         _texture = textureNum;
+        if (bound) {
+            _bounds = [[BoundingBox alloc] init : gCubeVertexData : sizeof(gCubeVertexData)];
+        } else {
+            _bounds = NULL;
+        }
     }
     return self;
 }

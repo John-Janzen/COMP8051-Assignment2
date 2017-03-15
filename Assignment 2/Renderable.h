@@ -10,6 +10,7 @@
 #define Renderable_h
 #import <UIKit/UIKit.h>
 #import <GLKit/GLKit.h>
+#include "BoundingBox.h"
 
 @interface Renderable : NSObject {
     
@@ -18,12 +19,12 @@
     GLuint _vertexArray, _vertexBuffer[1];
     GLKVector3 _positionVector, _rotateVector, _scaleVector;
     int _texture;
+    BoundingBox *_bounds;
     @private
     GLKMatrix4 _modelMatrix, _modelViewProjection;
     GLKMatrix3 _normalMatrix;
     GLfloat _arraySize, _renderType, _numOfIndices, _txtArraySize, _normArraySize;
     NSString *_ID;
-    
 }
 
 - (void) transformSetup;

@@ -13,7 +13,7 @@
 @implementation Floor
 
 - (id) init: (NSString*) name :(GLKVector3)pos :(GLKVector3)rot :(GLKVector3)scale
-           :(GLfloat)renderType :(GLfloat)num :(GLfloat *)array :(GLfloat) count : (int) textureNum {
+           :(GLfloat)renderType :(GLfloat)num :(GLfloat *)array :(GLfloat) count : (int) textureNum : (BOOL) bound {
     self = [super init];
     if (self) {
         [super setObjectID:name];
@@ -25,6 +25,11 @@
         [super setRenderType:renderType];
         [super setArraySize: (count * sizeof(GLfloat))];
         _texture = textureNum;
+        if (bound) {
+            _bounds = [[BoundingBox alloc] init : array : count];
+        } else {
+            _bounds = NULL;
+        }
     }
     return self;
 }
