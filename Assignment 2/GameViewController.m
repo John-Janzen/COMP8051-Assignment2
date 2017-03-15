@@ -201,8 +201,8 @@ enum
     uniforms[UNIFORM_DIFFUSE_COMPONENT] = glGetUniformLocation(_program, "diffuseComponent");
     uniforms[UNIFORM_SPECULAR_COMPONENT] = glGetUniformLocation(_program, "specularComponent");
     
-    ambientComponent = GLKVector4Make(0.2, 0.2, 0.2, 1.0);
-    diffuseComponent = GLKVector4Make(0.3, 0.3, 0.3, 1.0);
+    ambientComponent = GLKVector4Make(0.5, 0.5, 0.5, 1.0);
+    diffuseComponent = GLKVector4Make(0.5, 0.5, 0.5, 1.0);
     shininess = 100.0;
     specularComponent = GLKVector4Make(1.0, 1.0, 1.0, 1.0);
     fogColor = GLKVector4Make(0.0f, 0.0f, 0.0f, 0.0);
@@ -521,7 +521,7 @@ enum
 
 - (IBAction)day2Night:(UIButton *)sender {
     if (dayNight) {
-        ambientComponent = GLKVector4Make(0.2, 0.2, 0.2, 1.0);
+        ambientComponent = GLKVector4Make(0.5, 0.5, 0.5, 1.0);
     } else {
         ambientComponent = GLKVector4Make(0.05, 0.05, 0.05, 1.0);
     }
@@ -540,7 +540,7 @@ enum
 
 - (IBAction)flashlightButton:(UIButton *)sender {
     if (flashLight) {
-        diffuseComponent = GLKVector4Make(0.3, 0.3, 0.3, 1.0);
+        diffuseComponent = GLKVector4Make(0.5, 0.5, 0.5, 1.0);
         specularComponent = GLKVector4Make(1.0, 1.0, 1.0, 1.0);
     } else {
         diffuseComponent = GLKVector4Make(0.0, 0.0, 0.0, 1.0);
