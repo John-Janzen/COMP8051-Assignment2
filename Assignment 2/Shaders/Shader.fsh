@@ -38,10 +38,7 @@ void main()
     vec3 L = normalize(lightPosition - eyePos.xyz);
     float Ks = pow(max(dot(eyeNormal, normalize(L+E)), 0.0), shininess);
     
-    float lightDist = length(L);
-    float attenuation = 1.0 / (1.0 + 0.007 * lightDist +  0.000008 * lightDist * lightDist);
-    
-    float angle = max(dot(spotDirection, -normalize(eyePos.xyz - lightPosition)), 0.0);
+    float angle = max(dot(spotDirection, L), 0.0);
     
     if (acos(angle) > radians(spotCutoff)) {
         specular = vec4(0,0,0,1);
@@ -50,6 +47,6 @@ void main()
         specular = Ks*specularComponent;
     }
     
-    gl_FragColor = mix(fogColor, (ambientComponent + specular + (diffuse * attenuation)) * texture2D(Texture, TexCoordOut), fogFactor);
+    gl_FragColor = mix(fogColor, (ambientComponent + specular + diffuse) * texture2D(Texture, TexCoordOut), fogFactor);
     gl_FragColor.a = 1.0;
 }
