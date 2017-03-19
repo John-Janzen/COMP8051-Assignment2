@@ -11,22 +11,24 @@
 
 @implementation BoundingBox
 
-- (id) init : (GLfloat*) vertices : (GLfloat) count {
-    self = [super init];
-    if (self) {
-        minX = maxX = vertices[0];
-        minY = maxY = vertices[1];
-        minZ = maxZ = vertices[2];
-        for (int i = 10; i < count; i+= 10) {
-            if (vertices[i] > maxX) maxX = vertices[i];
-            if (vertices[i + 1] > maxY) maxY = vertices[i + 1];
-            if (vertices[i + 2] > maxZ) maxZ = vertices[i + 2];
-            if (vertices[i] < minX) minX = vertices[i];
-            if (vertices[i + 1] < minY) minY = vertices[i + 1];
-            if (vertices[i + 2] < minZ) minZ = vertices[i + 2];
-        }
+- (void) updateBounds: (GLfloat*) vertices : (GLfloat) count : (GLKMatrix4)modelView {
+    GLKVector4 verticesModeled = GLKVector4Make(vertices[0], vertices[1], vertices[2], 1);
+    verticesModeled = GLKMatrix4MultiplyVector4(modelView, verticesModeled);
+    minX = maxX = verticesModeled.x;
+    minY = maxY = verticesModeled.y;
+    minZ = maxZ = verticesModeled.z;
+    for (int i = 10; i < count; i+= 10) {
+        verticesModeled = GLKVector4Make(vertices[i], vertices[i + 1], vertices[i + 2], 1);
+        verticesModeled = GLKMatrix4MultiplyVector4(modelView, verticesModeled);
+        if (verticesModeled.x > maxX) maxX = verticesModeled.x;
+        if (verticesModeled.y > maxY) maxY = verticesModeled.y;
+        if (verticesModeled.z > maxZ) maxZ = verticesModeled.z;
+        if (verticesModeled.x < minX) minX = verticesModeled.x;
+        if (verticesModeled.y < minY) minY = verticesModeled.y;
+        if (verticesModeled.z < minZ) minZ = verticesModeled.z;
     }
-    return self;
 }
+
+
 
 @end

@@ -13,7 +13,7 @@
 
 - (id) init : (NSString*) name : (GLKVector3) pos : (GLKVector3) rot : (GLKVector3) scale
             : (GLfloat) renderType : (GLfloat) num : (GLfloat*) array
-            : (GLfloat) count : (int) textureNum : (BOOL) bound;
+            : (GLfloat) count : (int) textureNum : (BOOL) bound : (BOOL) collidable;
 
 @end
 

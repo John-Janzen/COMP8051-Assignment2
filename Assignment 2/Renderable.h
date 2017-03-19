@@ -25,6 +25,7 @@
     GLKMatrix3 _normalMatrix;
     GLfloat _arraySize, _renderType, _numOfIndices, _txtArraySize, _normArraySize;
     NSString *_ID;
+    BOOL _collidable;
 }
 
 - (void) transformSetup;
@@ -54,6 +55,7 @@
 - (GLfloat) getTxtArraySize;
 - (GLfloat) getNormArraySize;
 - (NSString*) getObjectID;
+- (BOOL) getCollidable;
 
 - (void) setArraySize : (GLfloat) size;
 - (void) setRenderType : (GLfloat) render;
@@ -61,6 +63,7 @@
 - (void) setTxtArraySize : (GLfloat) size;
 - (void) setNormArraySize : (GLfloat) size;
 - (void) setObjectID : (NSString*) name;
+- (void) setCollidable : (BOOL) flag;
 
 
 @end

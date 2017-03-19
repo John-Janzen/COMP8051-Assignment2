@@ -55,7 +55,7 @@ enum
     GLKVector4 specularComponent;
     GLKVector4 ambientComponent;
     
-    float _rotation;
+    float _rotation, _moving;
     NSMutableArray *renders;
     MazeController *maze;
     TextureLoad *textureLoader;
@@ -64,7 +64,7 @@ enum
     int height, width;
     GLuint texture[6];
     
-    BOOL dayNight, fogEffect, flashLight;
+    BOOL dayNight, fogEffect, flashLight, collided;
     
     float cameraRotationSpeed;
     
@@ -94,6 +94,7 @@ enum
 - (BOOL)linkProgram:(GLuint)prog;
 - (BOOL)validateProgram:(GLuint)prog;
 - (void)specialUpdates:(Renderable*)render;
+- (void)collisionUpdate:(Renderable*)render;
 - (void)createFloor;
 - (void)CreateWestWalls;
 - (void)CreateEastWalls;
@@ -125,7 +126,7 @@ enum
     renders = [[NSMutableArray alloc] init];
     maze = [[MazeController alloc] init];
     textureLoader = [[TextureLoad alloc] init];
-    width = height = 10;
+    width = height = 4;
     numOfVertices = 10;
     cameraRotationSpeed = 0.002;
     cameraPosition = initCameraPos = GLKVector3Make((-width / 2.0f) - 0.5f, 0.5f, (-height / 2.0f) + 0.5f);
@@ -143,9 +144,8 @@ enum
                                          : GLKVector3Make( (-width / 2) + 0.5f, 0.5f, (-height / 2) + 0.5f)
                                          : GLKVector3Make(0.0f, 0.0f, 0.0f)
                                          : GLKVector3Make(0.25f, 0.25f, 0.25f)
-                                         : GL_TRIANGLES : 36 : NULL : 0 : 5 : false]];
+                                         : GL_TRIANGLES : 36 : NULL : 0 : 5 : true : true]];
     
-    moving = 0.0f;
     [maze createMiniMap: map];
     imageView = [[UIImageView alloc] initWithFrame:CGRectMake(-10, 10, 10, 10)];
     imageView.image = [UIImage imageNamed:@"playerPointer.png"];
@@ -278,6 +278,7 @@ enum
         [render transformSetup];
         
         [self specialUpdates:render];
+        [self collisionUpdate:render];
         [render setModelMatrix:GLKMatrix4Multiply(cameraViewMatrix, [render getModelMatrix])];
         
         [render setNormalMatrix:GLKMatrix3InvertAndTranspose(GLKMatrix4GetMatrix3([render getModelMatrix]), NULL)];
@@ -286,6 +287,9 @@ enum
     }
     
     _rotation += self.timeSinceLastUpdate * 0.5f;
+    if (!collided) {
+        _moving += self.timeSinceLastUpdate * 0.5f;
+    }
 }
 
 - (void)glkView:(GLKView *)view drawInRect:(CGRect)rect
@@ -318,8 +322,24 @@ enum
     }
 }
 
-- (void) specialUpdates :(Renderable*) render{
+- (void) collisionUpdate : (Renderable*) render{
+    if ([render getCollidable]) {
+        [render->_bounds updateBounds: render->_arrayVertices : [render getArraySize] :[render getModelMatrix]];
+        for (Renderable *coll in renders) {
+            if (coll->_bounds != NULL && coll != render) {
+                if ((render->_bounds->minX <= coll->_bounds->maxX && render->_bounds->maxX >= coll->_bounds->minX) &&
+                    (render->_bounds->minY <= coll->_bounds->maxY && render->_bounds->maxY >= coll->_bounds->minY) &&
+                    (render->_bounds->minZ <= coll->_bounds->maxZ && render->_bounds->maxZ >= coll->_bounds->minZ)) {
+                    collided = true;
+                }
+            }
+        }
+    }
+}
+
+- (void) specialUpdates : (Renderable*) render{
     if ([[render getObjectID] isEqual:@"Cube"]) {
+        [render translateMatrix:GLKVector3Make(_moving, 0.0f, 0.0f)];
         [render rotateMatrix:GLKVector3Make(1.0f, 1.0f, 1.0f) :_rotation];
     }
 }
@@ -566,10 +586,11 @@ enum
                                            : GLKVector3Make(0.0f, 0.0f, 0.0f)
                                            : GLKVector3Make(1.0f, 1.0f, 1.0f)
                                            : GL_TRIANGLES: combine.count / numOfVertices : WallVertices
-                                           : combine.count : 0 : false]];
+                                           : combine.count : 0 : false : false]];
 }
 
 - (void) CreateWestWalls {
+    int nameNum = 0;
     for (int i = 0; i < width; i++) {
         for (int j = 0; j < height; j++) {
             NSMutableArray *vertices = [maze CreateWestWallVertices: i: j];
@@ -586,16 +607,18 @@ enum
             for (int i = 0; i < [combine count]; i++) {
                 WallVertices[i] = [combine[i] floatValue];
             }
-            [renders addObject:[[Wall alloc] init: @"WestWalls" : GLKVector3Make(0.0f, 0.0f, 0.0f)
+            [renders addObject:[[Wall alloc] init: [NSString stringWithFormat:@"WestWall%d", nameNum++] : GLKVector3Make(0.0f, 0.0f, 0.0f)
                                                  : GLKVector3Make(0.0f, 0.0f, 0.0f)
                                                  : GLKVector3Make(1.0f, 1.0f, 1.0f)
                                                  : GL_TRIANGLES : (combine.count / numOfVertices) : WallVertices
-                                                 : combine.count : [maze getDirectionText : i : j : WALLWEST] : true]];
+                                                 : combine.count : [maze getDirectionText : i : j : WALLWEST] : true : false]];
+            
         }
     }
 }
 
 - (void) CreateEastWalls {
+    int nameNum = 0;
     for (int i = 0; i < width; i++) {
         for (int j = 0; j < height; j++) {
             NSMutableArray *vertices = [maze CreateEastWallVertices: i: j];
@@ -612,16 +635,17 @@ enum
             for (int i = 0; i < [combine count]; i++) {
                 WallVertices[i] = [combine[i] floatValue];
             }
-            [renders addObject:[[Wall alloc] init: @"EastWalls" : GLKVector3Make(0.0f, 0.0f, 0.0f)
+            [renders addObject:[[Wall alloc] init: [NSString stringWithFormat:@"EastWall%d", nameNum++] : GLKVector3Make(0.0f, 0.0f, 0.0f)
                                                  : GLKVector3Make(0.0f, 0.0f, 0.0f)
                                                  : GLKVector3Make(1.0f, 1.0f, 1.0f)
                                                  : GL_TRIANGLES : (combine.count / numOfVertices) : WallVertices
-                                                 : combine.count : [maze getDirectionText : i : j : WALLEAST] : true]];
+                                                 : combine.count : [maze getDirectionText : i : j : WALLEAST] : true : false]];
         }
     }
 }
 
 - (void) CreateNorthWalls {
+    int nameNum = 0;
     for (int i = 0; i < width; i++) {
         for (int j = 0; j < height; j++) {
             NSMutableArray *vertices = [maze CreateNorthWallVertices: i: j];
@@ -638,16 +662,17 @@ enum
             for (int i = 0; i < [combine count]; i++) {
                 WallVertices[i] = [combine[i] floatValue];
             }
-            [renders addObject:[[Wall alloc] init: @"NorthWalls" : GLKVector3Make(0.0f, 0.0f, 0.0f)
+            [renders addObject:[[Wall alloc] init: [NSString stringWithFormat:@"NorthWall%d", nameNum++] : GLKVector3Make(0.0f, 0.0f, 0.0f)
                                                  : GLKVector3Make(0.0f, 0.0f, 0.0f)
                                                  : GLKVector3Make(1.0f, 1.0f, 1.0f)
                                                  : GL_TRIANGLES : (combine.count / numOfVertices) : WallVertices
-                                                 : combine.count : [maze getDirectionText : i : j : WALLNORTH] : true]];
+                                                 : combine.count : [maze getDirectionText : i : j : WALLNORTH] : true : false]];
         }
     }
 }
 
 - (void) CreateSouthWalls {
+    int nameNum = 0;
     for (int i = 0; i < width; i++) {
         for (int j = 0; j < height; j++) {
             NSMutableArray *vertices = [maze CreateSouthWallVertices: i: j];
@@ -664,11 +689,11 @@ enum
             for (int i = 0; i < [combine count]; i++) {
                 WallVertices[i] = [combine[i] floatValue];
             }
-            [renders addObject:[[Wall alloc] init: @"SouthWalls" : GLKVector3Make(0.0f, 0.0f, 0.0f)
+            [renders addObject:[[Wall alloc] init: [NSString stringWithFormat:@"SouthWall%d", nameNum++] : GLKVector3Make(0.0f, 0.0f, 0.0f)
                                                  : GLKVector3Make(0.0f, 0.0f, 0.0f)
                                                  : GLKVector3Make(1.0f, 1.0f, 1.0f)
                                                  : GL_TRIANGLES : (combine.count / numOfVertices) : WallVertices
-                                                 : combine.count : [maze getDirectionText : i : j : WALLSOUTH] : true]];
+                                                 : combine.count : [maze getDirectionText : i : j : WALLSOUTH] : true : false]];
         }
     }
 }

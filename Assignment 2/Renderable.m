@@ -119,6 +119,10 @@
     return _ID;
 }
 
+- (BOOL) getCollidable {
+    return _collidable;
+}
+
 - (void) setArraySize : (GLfloat) size{
     _arraySize = size;
 }
@@ -141,6 +145,10 @@
 
 - (void) setObjectID:(NSString *)name {
     _ID = name;
+}
+
+- (void) setCollidable:(BOOL)flag {
+    _collidable = flag;
 }
 
 @end

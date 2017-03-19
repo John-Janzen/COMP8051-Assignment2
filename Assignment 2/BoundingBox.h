@@ -12,13 +12,13 @@
 #import <GLKit/GLKit.h>
 
 @interface BoundingBox : NSObject {
-    
+    @public
     GLfloat minX, minY, minZ;
     GLfloat maxX, maxY, maxZ;
     
 }
 
-- (id) init : (GLfloat*) vertices : (GLfloat) count ;
+- (void) updateBounds : (GLfloat*) vertices : (GLfloat) count : (GLKMatrix4) modelView;
 
 @end
 

@@ -11,25 +11,28 @@
 
 @implementation Wall
 
-- (id) init:(NSString*) name : (GLKVector3)pos :(GLKVector3)rot :(GLKVector3)scale
-           :(GLfloat)renderType :(GLfloat)num :(GLfloat *)array :(GLfloat) count
-           :(int) textureNum : (BOOL) bound{
+- (id) init: (NSString*) name : (GLKVector3)pos : (GLKVector3)rot : (GLKVector3)scale
+           : (GLfloat)renderType : (GLfloat)num : (GLfloat *)array : (GLfloat) count
+           : (int) textureNum : (BOOL) bound : (BOOL) collidable{
     self = [super init];
     if (self) {
         [super setObjectID:name];
         _positionVector = pos;
         _rotateVector = rot;
         _scaleVector = scale;
+        [super transformSetup];
         _arrayVertices = array;
         [super setNumIndices:num];
         [super setRenderType:renderType];
         [super setArraySize: (count * sizeof(GLfloat))];
         _texture = textureNum;
         if (bound) {
-            _bounds = [[BoundingBox alloc] init : array : count];
+            _bounds = [[BoundingBox alloc] init];
+            [_bounds updateBounds:array :count :[super getModelMatrix]];
         } else {
             _bounds = NULL;
         }
+        [super setCollidable:collidable];
     }
     return self;
 }
