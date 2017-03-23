@@ -13,10 +13,16 @@
 #include "Floor.h"
 #include "TextureLoad.h"
 #include "Wall.h"
+#include "Enemy.h"
 
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
 // Uniform index.
+typedef struct{
+    GLKVector3 VertexP;
+    GLKVector3 VertexN;
+}  TheGOTAChen;
+
 enum
 {
     UNIFORM_MODELVIEWPROJECTION_MATRIX,
@@ -62,6 +68,7 @@ enum
     float moving, moving2;
     int height, width;
     GLuint texture[6];
+    GLfloat *enemyStuff;
     
     BOOL dayNight, fogEffect, flashLight;
     
@@ -124,13 +131,74 @@ enum
     renders = [[NSMutableArray alloc] init];
     maze = [[MazeController alloc] init];
     textureLoader = [[TextureLoad alloc] init];
+    
     width = height = 10;
     numOfVertices = 10;
     cameraRotationSpeed = 0.002;
     cameraPosition = initCameraPos = GLKVector3Make((-width / 2.0f) - 0.5f, 0.5f, (-height / 2.0f) + 0.5f);
     cameraUp = GLKVector3Make(0, 1, 0);
     cameraVerticalAngle = 0.0f; cameraHorizontalAngle = -M_PI_2;
+    
+    Enemy *frog = [[Enemy alloc] init];
+    [frog customStringFromFile];
+    //    NSMutableArray *vertexData = [[NSMutableArray alloc] init];
+    //
+    //    for (NSArray *face in frog->_faces)
+    //    {
+    //        for (NSNumber *vertex in face)
+    //        {
+    //            int vertIndex = [vertex integerValue];
+    //
+    //            [vertexData addObject:frog->_Vertex[vertIndex - 1]];
+    //        }
+    //    }
+    
+//        TheGOTAChen vertData[frog->_faces.count];
+//        int faceCounter = 0;
+//        for (NSMutableArray *face in frog->_faces)
+//        {
+//            int vertIndex = [face[0] integerValue] - 1;
+//            float vertX = [frog->_Vertex[vertIndex] floatValue];
+//            float vertY = [frog->_Vertex[vertIndex + 1] floatValue];
+//            float vertZ = [frog->_Vertex[vertIndex + 2] floatValue];
+//            
+//            vertData[faceCounter].VertexP = GLKVector3Make(vertX, vertY, vertZ);
+//    
+//            faceCounter += 3;
+//            for (NSNumber *vertex in face)
+//            {
+//                int vertIndex = [vertex integerValue];
+//    
+//                [vertexData addObject:frog->_Vertex[vertIndex - 1]];
+//            }
+//        }
+    
+    
+    enemyStuff = (GLfloat*) malloc(sizeof(GLfloat) * ((2 * frog->_faces.count + (2 * (frog->_faces.count / 3))) + (2 * (frog->_faces.count / 3))));
+    for (int i = 0, j = 0; j < frog->_faces.count; i+=numOfVertices, j += 3) {
+        enemyStuff[i] = [frog->_Vertex[(([frog->_faces[j][0] intValue] - 1) * 3)] floatValue];
+        enemyStuff[i + 1] = [frog->_Vertex[(([frog->_faces[j][0] intValue] - 1) * 3) + 1] floatValue];
+        enemyStuff[i + 2] = [frog->_Vertex[(([frog->_faces[j][0] intValue] - 1) * 3) + 2] floatValue];
+        enemyStuff[i + 3] = 1.0f;
+        
+        enemyStuff[i + 4] = [frog->_VertexNormal[([frog->_faces[j][2] intValue] - 1)] floatValue];
+        enemyStuff[i + 5] = [frog->_VertexNormal[([frog->_faces[j][2] intValue] - 1) + 1] floatValue];
+        enemyStuff[i + 6] = [frog->_VertexNormal[([frog->_faces[j][2] intValue] - 1) + 2] floatValue];
+        enemyStuff[i + 7] = 1.0f;
+        
+        enemyStuff[i + 8] = 1.0f;
+        enemyStuff[i + 9] = 0.0f;
+    }
+    
+    [renders addObject:[[Wall alloc] init: @"Enemy" : GLKVector3Make(0.0f, 0.0f, 0.0f)
+                                         : GLKVector3Make(0.0f, 0.0f, 0.0f)
+                                         : GLKVector3Make(0.25f, 0.25f, 0.25f)
+                                         : GL_TRIANGLES : 10000 : enemyStuff
+                                         : (2 * frog->_faces.count + (2 * (frog->_faces.count / 3))) + (2 * (frog->_faces.count / 3)) : 5]];
+    
     [maze Create:width :height];
+
+    
     [self createFloor];
     
     [self CreateWestWalls];
