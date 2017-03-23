@@ -17,7 +17,7 @@
     @public
     GLfloat *_arrayVertices;
     GLuint _vertexArray, _vertexBuffer[1];
-    GLKVector3 _positionVector, _rotateVector, _scaleVector;
+    GLKVector3 _positionVector, _rotateVector, _scaleVector, _movementVector, _normalDirection;
     int _texture;
     BoundingBox *_bounds;
     @private
@@ -33,6 +33,7 @@
 - (void) rotateMatrixSetup; // sets up rotation vector
 - (void) scaleMatrixSetup;
 - (void) removeScaleFactor;
+- (void) removeRotateFactor;
 
 - (void) setNormalMatrix:(GLKMatrix3) matrix;
 - (void) setModelMatrix:(GLKMatrix4) matrix; // set the model matrix whenever needed
@@ -45,6 +46,7 @@
 - (void) translateMatrix:(GLKVector3) translate; // translates the model
 - (void) rotateMatrix:(GLKVector3)rotateMat : (float)degree; // rotates model by radians on axis
 - (void) scaleMatrix : (GLKVector3) scale;
+- (void) movingVectorMove : (GLKVector3) newMove;
 
 - (void) newRotate:(GLKVector3)rot; // creates new rotation matrix
 - (void) resetPosRot; // resets position + rotation to 0,0,0

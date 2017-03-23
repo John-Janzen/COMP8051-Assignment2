@@ -56,9 +56,11 @@ enum
     GLKVector4 ambientComponent;
     
     float _rotation, _moving;
-    NSMutableArray *renders;
+    NSMutableArray *renders, *extraBounds;
     MazeController *maze;
     TextureLoad *textureLoader;
+    
+    BoundingBox *entrance, *exit;
     GLfloat *floorVertices, *WallVertices, *textureArray, *normalVertices;
     float moving, moving2;
     int height, width;
@@ -77,6 +79,7 @@ enum
     GLKVector3 cameraDirection;
     GLKVector3 cameraUp;
     GLKMatrix4 diffuseDirection;
+    GLKVector3 enemyDirection;
     UIImageView *imageView;
     UIView *map;
     
@@ -101,7 +104,8 @@ enum
 - (void)CreateNorthWalls;
 - (void)CreateSouthWalls;
 - (NSMutableArray*) combineArrays : (NSMutableArray*) vert : (NSMutableArray*) norm : (NSMutableArray*) tex;
-- (void) cameraUpdate;
+- (void)cameraUpdate;
+- (void)changeEnemyDirection;
 @end
 
 @implementation GameViewController
@@ -131,6 +135,7 @@ enum
     cameraRotationSpeed = 0.002;
     cameraPosition = initCameraPos = GLKVector3Make((-width / 2.0f) - 0.5f, 0.5f, (-height / 2.0f) + 0.5f);
     cameraUp = GLKVector3Make(0, 1, 0);
+    enemyDirection = GLKVector3Make(1.0f, 0.0f, 0.0f);
     cameraVerticalAngle = 0.0f; cameraHorizontalAngle = -M_PI_2;
     [maze Create:width :height];
     [self createFloor];
@@ -140,10 +145,18 @@ enum
     [self CreateNorthWalls];
     [self CreateSouthWalls];
     
+    exit = [[BoundingBox alloc] init];
+    entrance = [[BoundingBox alloc] init];
+    extraBounds = [[NSMutableArray alloc] init];
+    
+    [extraBounds addObject:[exit createEmptyBounds : width : 1]];
+    [extraBounds addObject:[entrance createEmptyBounds : -width : 0]];
+    
     [renders addObject:[[Cube alloc] init: @"Cube"
                                          : GLKVector3Make( (-width / 2) + 0.5f, 0.5f, (-height / 2) + 0.5f)
                                          : GLKVector3Make(0.0f, 0.0f, 0.0f)
                                          : GLKVector3Make(0.25f, 0.25f, 0.25f)
+                                         : GLKVector3Make(0.0f, 0.0f, 0.0f)
                                          : GL_TRIANGLES : 36 : NULL : 0 : 5 : true : true]];
     
     [maze createMiniMap: map];
@@ -287,9 +300,6 @@ enum
     }
     
     _rotation += self.timeSinceLastUpdate * 0.5f;
-    if (!collided) {
-        _moving += self.timeSinceLastUpdate * 0.5f;
-    }
 }
 
 - (void)glkView:(GLKView *)view drawInRect:(CGRect)rect
@@ -330,17 +340,35 @@ enum
                 if ((render->_bounds->minX <= coll->_bounds->maxX && render->_bounds->maxX >= coll->_bounds->minX) &&
                     (render->_bounds->minY <= coll->_bounds->maxY && render->_bounds->maxY >= coll->_bounds->minY) &&
                     (render->_bounds->minZ <= coll->_bounds->maxZ && render->_bounds->maxZ >= coll->_bounds->minZ)) {
-                    collided = true;
+                    if (GLKVector3DotProduct(enemyDirection, coll->_normalDirection) <= -0.5) {
+                        NSLog(@"%@, %@", [render getObjectID], [coll getObjectID]);
+                        [self changeEnemyDirection];
+                        break;
+                    }
                 }
+            }
+        }
+        for (BoundingBox *bounds in extraBounds) {
+            if ((render->_bounds->minX <= bounds->maxX && render->_bounds->maxX >= bounds->minX) &&
+                (render->_bounds->minY <= bounds->maxY && render->_bounds->maxY >= bounds->minY) &&
+                (render->_bounds->minZ <= bounds->maxZ && render->_bounds->maxZ >= bounds->minZ)) {
+                [self changeEnemyDirection];
+                break;
             }
         }
     }
 }
 
+- (void) changeEnemyDirection {
+    //enemyDirection = GLKVector3Negate(enemyDirection);
+    enemyDirection = GLKMatrix4MultiplyVector3(GLKMatrix4MakeYRotation(M_PI * 1.5f), enemyDirection);
+}
+
 - (void) specialUpdates : (Renderable*) render{
     if ([[render getObjectID] isEqual:@"Cube"]) {
-        [render translateMatrix:GLKVector3Make(_moving, 0.0f, 0.0f)];
-        [render rotateMatrix:GLKVector3Make(1.0f, 1.0f, 1.0f) :_rotation];
+        [render movingVectorMove:GLKVector3MultiplyScalar(enemyDirection, self.timeSinceLastUpdate * 0.5f)];
+        [render translateMatrix:render->_movementVector];
+        //[render rotateMatrix:GLKVector3Make(1.0f, 1.0f, 1.0f) :_rotation];
     }
 }
 
@@ -585,6 +613,7 @@ enum
     [renders addObject:[[Floor alloc] init : @"Floor" : GLKVector3Make(0.0f, 0.0f, 0.0f)
                                            : GLKVector3Make(0.0f, 0.0f, 0.0f)
                                            : GLKVector3Make(1.0f, 1.0f, 1.0f)
+                                           : GLKVector3Make(0.0f, -1.0f, 0.0f)
                                            : GL_TRIANGLES: combine.count / numOfVertices : WallVertices
                                            : combine.count : 0 : false : false]];
 }
@@ -610,6 +639,7 @@ enum
             [renders addObject:[[Wall alloc] init: [NSString stringWithFormat:@"WestWall%d", nameNum++] : GLKVector3Make(0.0f, 0.0f, 0.0f)
                                                  : GLKVector3Make(0.0f, 0.0f, 0.0f)
                                                  : GLKVector3Make(1.0f, 1.0f, 1.0f)
+                                                 : GLKVector3Make(0.0f, 0.0f, -1.0f)
                                                  : GL_TRIANGLES : (combine.count / numOfVertices) : WallVertices
                                                  : combine.count : [maze getDirectionText : i : j : WALLWEST] : true : false]];
             
@@ -638,6 +668,7 @@ enum
             [renders addObject:[[Wall alloc] init: [NSString stringWithFormat:@"EastWall%d", nameNum++] : GLKVector3Make(0.0f, 0.0f, 0.0f)
                                                  : GLKVector3Make(0.0f, 0.0f, 0.0f)
                                                  : GLKVector3Make(1.0f, 1.0f, 1.0f)
+                                                 : GLKVector3Make(0.0f, 0.0f, 1.0f)
                                                  : GL_TRIANGLES : (combine.count / numOfVertices) : WallVertices
                                                  : combine.count : [maze getDirectionText : i : j : WALLEAST] : true : false]];
         }
@@ -665,6 +696,7 @@ enum
             [renders addObject:[[Wall alloc] init: [NSString stringWithFormat:@"NorthWall%d", nameNum++] : GLKVector3Make(0.0f, 0.0f, 0.0f)
                                                  : GLKVector3Make(0.0f, 0.0f, 0.0f)
                                                  : GLKVector3Make(1.0f, 1.0f, 1.0f)
+                                                 : GLKVector3Make(1.0f, 0.0f, 0.0f)
                                                  : GL_TRIANGLES : (combine.count / numOfVertices) : WallVertices
                                                  : combine.count : [maze getDirectionText : i : j : WALLNORTH] : true : false]];
         }
@@ -692,6 +724,7 @@ enum
             [renders addObject:[[Wall alloc] init: [NSString stringWithFormat:@"SouthWall%d", nameNum++] : GLKVector3Make(0.0f, 0.0f, 0.0f)
                                                  : GLKVector3Make(0.0f, 0.0f, 0.0f)
                                                  : GLKVector3Make(1.0f, 1.0f, 1.0f)
+                                                 : GLKVector3Make(-1.0f, 0.0f, 0.0f)
                                                  : GL_TRIANGLES : (combine.count / numOfVertices) : WallVertices
                                                  : combine.count : [maze getDirectionText : i : j : WALLSOUTH] : true : false]];
         }

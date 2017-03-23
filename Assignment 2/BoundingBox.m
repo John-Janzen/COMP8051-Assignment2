@@ -11,6 +11,15 @@
 
 @implementation BoundingBox
 
+- (id) init {
+    [super self];
+    if (self) {
+        minX = minY = minZ = 15;
+        maxX = maxY = maxZ = -15;
+    }
+    return self;
+}
+
 - (void) updateBounds: (GLfloat*) vertices : (GLfloat) count : (GLKMatrix4)modelView {
     GLKVector4 verticesModeled = GLKVector4Make(vertices[0], vertices[1], vertices[2], 1);
     verticesModeled = GLKMatrix4MultiplyVector4(modelView, verticesModeled);
@@ -27,6 +36,20 @@
         if (verticesModeled.y < minY) minY = verticesModeled.y;
         if (verticesModeled.z < minZ) minZ = verticesModeled.z;
     }
+}
+
+- (id) createEmptyBounds : (int) wh : (int) x {
+    
+    maxX = minX = wh / 2;
+    for (int i = 0; i < 2; i++) {
+        for (int j = 0; j < 2; j++) {
+            if (i > maxY) maxY = i;
+            if (j + wh/2 > maxZ) maxZ = j + wh/2;
+            if (i < minY) minY = i;
+            if (j + wh/2 < minZ) minZ = j + wh/2;
+        }
+    }
+    return self;
 }
 
 

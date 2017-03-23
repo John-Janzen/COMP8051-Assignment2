@@ -11,9 +11,9 @@
 
 @implementation Wall
 
-- (id) init: (NSString*) name : (GLKVector3)pos : (GLKVector3)rot : (GLKVector3)scale
+- (id) init: (NSString*) name : (GLKVector3)pos : (GLKVector3)rot : (GLKVector3)scale : (GLKVector3) normalDirect
            : (GLfloat)renderType : (GLfloat)num : (GLfloat *)array : (GLfloat) count
-           : (int) textureNum : (BOOL) bound : (BOOL) collidable{
+           : (int) textureNum : (BOOL) bound : (BOOL) collidable {
     self = [super init];
     if (self) {
         [super setObjectID:name];
@@ -26,6 +26,7 @@
         [super setRenderType:renderType];
         [super setArraySize: (count * sizeof(GLfloat))];
         _texture = textureNum;
+        _normalDirection = normalDirect;
         if (bound) {
             _bounds = [[BoundingBox alloc] init];
             [_bounds updateBounds:array :count :[super getModelMatrix]];

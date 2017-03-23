@@ -49,8 +49,18 @@
     [self scaleMatrixSetup];
 }
 
+- (void) movingVectorMove : (GLKVector3) newMove {
+    _movementVector = GLKVector3Add(_movementVector, newMove);
+}
+
 - (void) removeScaleFactor {
     _modelMatrix = GLKMatrix4Scale(_modelMatrix, 1.0f / _scaleVector.x, 1.0f / _scaleVector.y, 1.0f / _scaleVector.z);
+}
+
+- (void) removeRotateFactor {
+    _modelMatrix = GLKMatrix4RotateX(_modelMatrix, -_rotateVector.x);
+    _modelMatrix = GLKMatrix4RotateY(_modelMatrix, -_rotateVector.y);
+    _modelMatrix = GLKMatrix4RotateZ(_modelMatrix, -_rotateVector.z);
 }
 
 - (void) setModelMatrix:(GLKMatrix4)matrix {

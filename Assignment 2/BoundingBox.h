@@ -19,6 +19,7 @@
 }
 
 - (void) updateBounds : (GLfloat*) vertices : (GLfloat) count : (GLKMatrix4) modelView;
+- (id) createEmptyBounds : (int) wh : (int) x;
 
 @end
 
