@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		01BA4A6D1E839377009C06BA /* Enemy.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BA4A6C1E839377009C06BA /* Enemy.m */; };
+		01BA4A6F1E83939F009C06BA /* enemyModel5.obj in Resources */ = {isa = PBXBuildFile; fileRef = 01BA4A6E1E83939F009C06BA /* enemyModel5.obj */; };
 		1347130A1E709F6700D3A3F7 /* Wall.m in Sources */ = {isa = PBXBuildFile; fileRef = 134713091E709F6700D3A3F7 /* Wall.m */; };
 		1347130D1E70AD0700D3A3F7 /* NoPassTexture.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 1347130C1E70AD0700D3A3F7 /* NoPassTexture.jpg */; };
 		134713101E70C9B600D3A3F7 /* rightArrowTexture.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 1347130E1E70C9B600D3A3F7 /* rightArrowTexture.jpg */; };
@@ -55,6 +57,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		01BA4A6B1E839366009C06BA /* Enemy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Enemy.h; sourceTree = "<group>"; };
+		01BA4A6C1E839377009C06BA /* Enemy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Enemy.m; sourceTree = "<group>"; };
+		01BA4A6E1E83939F009C06BA /* enemyModel5.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = enemyModel5.obj; sourceTree = "<group>"; };
 		134713091E709F6700D3A3F7 /* Wall.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Wall.m; sourceTree = "<group>"; };
 		1347130B1E709F7000D3A3F7 /* Wall.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Wall.h; sourceTree = "<group>"; };
 		1347130C1E70AD0700D3A3F7 /* NoPassTexture.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = NoPassTexture.jpg; sourceTree = "<group>"; };
@@ -196,7 +201,10 @@
 				EC35B4C41E6BB6140010DE64 /* Supporting Files */,
 				EC35B5011E6BB8DF0010DE64 /* MazeController.mm */,
 				EC35B50B1E6BC9F90010DE64 /* MazeController.h */,
+				01BA4A6B1E839366009C06BA /* Enemy.h */,
+				01BA4A6C1E839377009C06BA /* Enemy.m */,
 				EC35B5031E6BBB850010DE64 /* Renderable.m */,
+				01BA4A6E1E83939F009C06BA /* enemyModel5.obj */,
 				EC35B5061E6BBBA10010DE64 /* Renderable.h */,
 				EC56E3851E6D18CA00B6A7D2 /* TextureLoad.m */,
 				EC56E3871E6D18D400B6A7D2 /* TextureLoad.h */,
@@ -301,7 +309,7 @@
 				TargetAttributes = {
 					EC35B4C01E6BB6130010DE64 = {
 						CreatedOnToolsVersion = 8.2.1;
-						DevelopmentTeam = 4T9N7K586U;
+						DevelopmentTeam = LA5FQ8Z555;
 						ProvisioningStyle = Automatic;
 					};
 					EC35B4DD1E6BB6140010DE64 = {
@@ -344,6 +352,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				134713101E70C9B600D3A3F7 /* rightArrowTexture.jpg in Resources */,
+				01BA4A6F1E83939F009C06BA /* enemyModel5.obj in Resources */,
 				EC35B4D31E6BB6140010DE64 /* Main.storyboard in Resources */,
 				EC35B4CD1E6BB6140010DE64 /* Shader.vsh in Resources */,
 				134713131E70CB4F00D3A3F7 /* leftAndRightArrowsTexture.jpg in Resources */,
@@ -381,6 +390,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				01BA4A6D1E839377009C06BA /* Enemy.m in Sources */,
 				EC35B5081E6BBD480010DE64 /* Cube.m in Sources */,
 				EC35B4FF1E6BB7FD0010DE64 /* DisjointSet.cpp in Sources */,
 				EC35B4C91E6BB6140010DE64 /* AppDelegate.m in Sources */,
@@ -541,11 +551,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 4T9N7K586U;
+				DEVELOPMENT_TEAM = LA5FQ8Z555;
 				INFOPLIST_FILE = "Assignment 2/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "JohnGames.Assignment-2";
+				PRODUCT_BUNDLE_IDENTIFIER = "ChenLi.Assignment-2";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -554,11 +564,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 4T9N7K586U;
+				DEVELOPMENT_TEAM = LA5FQ8Z555;
 				INFOPLIST_FILE = "Assignment 2/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "JohnGames.Assignment-2";
+				PRODUCT_BUNDLE_IDENTIFIER = "ChenLi.Assignment-2";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
