@@ -309,7 +309,7 @@
 				TargetAttributes = {
 					EC35B4C01E6BB6130010DE64 = {
 						CreatedOnToolsVersion = 8.2.1;
-						DevelopmentTeam = LA5FQ8Z555;
+						DevelopmentTeam = 4T9N7K586U;
 						ProvisioningStyle = Automatic;
 					};
 					EC35B4DD1E6BB6140010DE64 = {
@@ -551,11 +551,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = LA5FQ8Z555;
+				DEVELOPMENT_TEAM = 4T9N7K586U;
 				INFOPLIST_FILE = "Assignment 2/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "ChenLi.Assignment-2";
+				PRODUCT_BUNDLE_IDENTIFIER = "JohnGames.Assignment-2";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -564,11 +564,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = LA5FQ8Z555;
+				DEVELOPMENT_TEAM = 4T9N7K586U;
 				INFOPLIST_FILE = "Assignment 2/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "ChenLi.Assignment-2";
+				PRODUCT_BUNDLE_IDENTIFIER = "JohnGames.Assignment-2";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
