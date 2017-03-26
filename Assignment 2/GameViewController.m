@@ -180,28 +180,28 @@ enum
 //        }
     
     
-    enemyStuff = (GLfloat*) malloc(sizeof(GLfloat) * ((2 * frog->_faces.count + (2 * (frog->_faces.count / 3))) + (2 * (frog->_faces.count / 3))));
-    for (int i = 0, j = 0; j < frog->_faces.count; i+=numOfVertices, j += 3) {
+    enemyStuff = (GLfloat*) malloc(sizeof(GLfloat) * (frog->_faces.count * 10));
+    for (int i = 0, j = 0; j < frog->_faces.count; i+=numOfVertices, j++) {
         enemyStuff[i] = [frog->_Vertex[(([frog->_faces[j][0] intValue] - 1) * 3)] floatValue];
         enemyStuff[i + 1] = [frog->_Vertex[(([frog->_faces[j][0] intValue] - 1) * 3) + 1] floatValue];
         enemyStuff[i + 2] = [frog->_Vertex[(([frog->_faces[j][0] intValue] - 1) * 3) + 2] floatValue];
         enemyStuff[i + 3] = 1.0f;
         
-        enemyStuff[i + 4] = [frog->_VertexNormal[([frog->_faces[j][2] intValue] - 1)] floatValue];
-        enemyStuff[i + 5] = [frog->_VertexNormal[([frog->_faces[j][2] intValue] - 1) + 1] floatValue];
-        enemyStuff[i + 6] = [frog->_VertexNormal[([frog->_faces[j][2] intValue] - 1) + 2] floatValue];
+        enemyStuff[i + 4] = [frog->_VertexNormal[(([frog->_faces[j][2] intValue] - 1) * 3)] floatValue];
+        enemyStuff[i + 5] = [frog->_VertexNormal[(([frog->_faces[j][2] intValue] - 1) * 3) + 1] floatValue];
+        enemyStuff[i + 6] = [frog->_VertexNormal[(([frog->_faces[j][2] intValue] - 1) * 3) + 2] floatValue];
         enemyStuff[i + 7] = 1.0f;
         
         enemyStuff[i + 8] = 1.0f;
         enemyStuff[i + 9] = 0.0f;
     }
     
-    [renders addObject:[[Wall alloc] init: @"Enemy" : GLKVector3Make(0.0f, 0.0f, 0.0f)
+    [renders addObject:[[Wall alloc] init: @"Enemy" : GLKVector3Make(0.0f, 5.0f, 0.0f)
                                          : GLKVector3Make(0.0f, 0.0f, 0.0f)
-                                         : GLKVector3Make(0.25f, 0.25f, 0.25f)
+                                         : GLKVector3Make(1.0f, 1.0f, 1.0f)
                                          : GLKVector3Make(0.0f, 0.0f, 0.0f)
-                                         : GL_TRIANGLES : 10000 : enemyStuff
-                                         : (2 * frog->_faces.count + (2 * (frog->_faces.count / 3))) + (2 * (frog->_faces.count / 3)) : 5 : false : false]];
+                                         : GL_TRIANGLES : frog->_faces.count : enemyStuff
+                                         : (frog->_faces.count * 10) : 5 : false : false]];
     
     [maze Create:width :height];
 

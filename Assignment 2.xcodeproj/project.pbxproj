@@ -37,6 +37,7 @@
 		EC35B50D1E6BEFB90010DE64 /* Floor.m in Sources */ = {isa = PBXBuildFile; fileRef = EC35B50C1E6BEFB90010DE64 /* Floor.m */; };
 		EC37784D1E73C7410054AE77 /* playerPointer.png in Resources */ = {isa = PBXBuildFile; fileRef = EC37784C1E73C7410054AE77 /* playerPointer.png */; };
 		EC56E3861E6D18CA00B6A7D2 /* TextureLoad.m in Sources */ = {isa = PBXBuildFile; fileRef = EC56E3851E6D18CA00B6A7D2 /* TextureLoad.m */; };
+		EC95F3E01E87751E00422C76 /* Cyclinder3.obj in Resources */ = {isa = PBXBuildFile; fileRef = EC95F3DF1E87751E00422C76 /* Cyclinder3.obj */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -105,6 +106,7 @@
 		EC37784C1E73C7410054AE77 /* playerPointer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = playerPointer.png; sourceTree = "<group>"; };
 		EC56E3851E6D18CA00B6A7D2 /* TextureLoad.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextureLoad.m; sourceTree = "<group>"; };
 		EC56E3871E6D18D400B6A7D2 /* TextureLoad.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TextureLoad.h; sourceTree = "<group>"; };
+		EC95F3DF1E87751E00422C76 /* Cyclinder3.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cyclinder3.obj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -204,8 +206,9 @@
 				01BA4A6B1E839366009C06BA /* Enemy.h */,
 				01BA4A6C1E839377009C06BA /* Enemy.m */,
 				EC35B5031E6BBB850010DE64 /* Renderable.m */,
-				01BA4A6E1E83939F009C06BA /* enemyModel5.obj */,
 				EC35B5061E6BBBA10010DE64 /* Renderable.h */,
+				01BA4A6E1E83939F009C06BA /* enemyModel5.obj */,
+				EC95F3DF1E87751E00422C76 /* Cyclinder3.obj */,
 				EC56E3851E6D18CA00B6A7D2 /* TextureLoad.m */,
 				EC56E3871E6D18D400B6A7D2 /* TextureLoad.h */,
 				134713171E70DB7700D3A3F7 /* Textures */,
@@ -358,6 +361,7 @@
 				134713131E70CB4F00D3A3F7 /* leftAndRightArrowsTexture.jpg in Resources */,
 				138EC2101E6F52F00056CB63 /* wallNSTexture.jpg in Resources */,
 				EC35B4D51E6BB6140010DE64 /* Assets.xcassets in Resources */,
+				EC95F3E01E87751E00422C76 /* Cyclinder3.obj in Resources */,
 				138EC20A1E6F42E70056CB63 /* floorTexture.jpg in Resources */,
 				1347130D1E70AD0700D3A3F7 /* NoPassTexture.jpg in Resources */,
 				EC35B4D81E6BB6140010DE64 /* LaunchScreen.storyboard in Resources */,
